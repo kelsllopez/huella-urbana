@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}🆘 Centro de Ayuda | Huella Urbana{% endblock %}
+
+{% block extra_head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/ayuda.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<div class="help-hero">
+    <h1><i class="fas fa-question-circle"></i> Centro de Ayuda</h1>
+    <p style="font-size: 1.3rem;">¿Cómo podemos ayudarte hoy?</p>
+</div>
+
+<!-- SEARCH -->
+<div class="container">
+    <div class="search-container">
+        <input type="text" class="search-input" placeholder="Busca tu pregunta aquí...">
+        <button class="search-btn">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+</div>
+
+<!-- CATEGORIES -->
+<div class="container">
+    <div class="category-grid">
+        <div class="category-card" onclick="scrollToSection('reportes')">
+            <div class="category-icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <div class="category-title">Cómo Reportar</div>
+            <div class="category-desc">Guía paso a paso para crear reportes</div>
+        </div>
+
+        <div class="category-card" onclick="scrollToSection('moderacion')">
+            <div class="category-icon" style="background: linear-gradient(135deg, var(--color-success), #059669);">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="category-title">Moderación</div>
+            <div class="category-desc">Proceso de verificación</div>
+        </div>
+
+        <div class="category-card" onclick="scrollToSection('cuenta')">
+            <div class="category-icon" style="background: linear-gradient(135deg, var(--color-secondary), #3B82F6);">
+                <i class="fas fa-user-cog"></i>
+            </div>
+            <div class="category-title">Mi Cuenta</div>
+            <div class="category-desc">Gestión de usuario</div>
+        </div>
+
+        <div class="category-card" onclick="scrollToSection('general')">
+            <div class="category-icon" style="background: linear-gradient(135deg, var(--color-warning), #F59E0B);">
+                <i class="fas fa-question"></i>
+            </div>
+            <div class="category-title">General</div>
+            <div class="category-desc">Preguntas frecuentes</div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ SECTIONS -->
+<div class="container">
+    <div class="faq-section">
+
+        <!-- REPORTES -->
+        <div class="faq-category" id="reportes">
+            <div class="faq-category-title">
+                <i class="fas fa-file-alt"></i>
+                Reportes de Incidentes
+            </div>
+
+            <div class="accordion" id="accordionReportes">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#r1">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿Cómo creo un nuevo reporte?
+                        </button>
+                    </h2>
+                    <div id="r1" class="accordion-collapse collapse show" data-bs-parent="#accordionReportes">
+                        <div class="accordion-body">
+                            <ol>
+                                <li>Haz clic en el botón "Nuevo Reporte" en la barra de navegación</li>
+                                <li>Completa todos los campos obligatorios (título, fecha, ubicación)</li>
+                                <li>Agrega fotografías del incidente (máximo 5 imágenes)</li>
+                                <li>Describe detalladamente lo sucedido</li>
+                                <li>Selecciona la gravedad del ataque</li>
+                                <li>Haz clic en "Enviar Reporte" para enviarlo a revisión</li>
+                            </ol>
+                            <div style="background: rgba(96, 165, 250, 0.1); padding: 1rem; border-radius: 10px; margin-top: 1rem;">
+                                <strong><i class="fas fa-lightbulb"></i> Tip:</strong> Las fotografías claras y ubicación precisa mejoran las chances de aprobación.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#r2">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿Qué información debo incluir?
+                        </button>
+                    </h2>
+                    <div id="r2" class="accordion-collapse collapse" data-bs-parent="#accordionReportes">
+                        <div class="accordion-body">
+                            <strong>Información requerida:</strong>
+                            <ul>
+                                <li>Título descriptivo del incidente</li>
+                                <li>Fecha y hora aproximada</li>
+                                <li>Ubicación precisa (calle y número)</li>
+                                <li>Tipo de animal víctima</li>
+                                <li>Gravedad del ataque</li>
+                                <li>Descripción detallada de los hechos</li>
+                                <li>Fotografías del lugar o lesiones (si es posible)</li>
+                                <li>Número de perros agresores</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#r3">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿Cuánto tarda en aprobarse mi reporte?
+                        </button>
+                    </h2>
+                    <div id="r3" class="accordion-collapse collapse" data-bs-parent="#accordionReportes">
+                        <div class="accordion-body">
+                            El tiempo de revisión varía entre <strong>24 a 72 horas</strong>. Los moderadores verifican cuidadosamente cada reporte para asegurar la veracidad de la información. Recibirás una notificación por correo cuando tu reporte sea aprobado o rechazado.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODERACIÓN -->
+        <div class="faq-category" id="moderacion">
+            <div class="faq-category-title">
+                <i class="fas fa-shield-alt" style="color: var(--color-success);"></i>
+                Proceso de Moderación
+            </div>
+
+            <div class="accordion" id="accordionModeracion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#m1">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿Cómo funciona la moderación?
+                        </button>
+                    </h2>
+                    <div id="m1" class="accordion-collapse collapse show" data-bs-parent="#accordionModeracion">
+                        <div class="accordion-body">
+                            <p>Todos los reportes pasan por un riguroso proceso de verificación:</p>
+                            <ol>
+                                <li><strong>Revisión inicial:</strong> Verificación de fotografías y ubicación</li>
+                                <li><strong>Análisis de contenido:</strong> Validación de la descripción</li>
+                                <li><strong>Consulta cruzada:</strong> Comparación con reportes similares</li>
+                                <li><strong>Decisión final:</strong> Aprobación o rechazo con justificación</li>
+                            </ol>
+                            <p>Este proceso garantiza que solo información verificable aparezca en el mapa público.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#m2">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿Por qué fue rechazado mi reporte?
+                        </button>
+                    </h2>
+                    <div id="m2" class="accordion-collapse collapse" data-bs-parent="#accordionModeracion">
+                        <div class="accordion-body">
+                            <strong>Motivos comunes de rechazo:</strong>
+                            <ul>
+                                <li>Fotografías poco claras o sin relación con el incidente</li>
+                                <li>Ubicación imprecisa o incorrecta</li>
+                                <li>Descripción insuficiente o inconsistente</li>
+                                <li>Información duplicada (ya existe un reporte del mismo incidente)</li>
+                                <li>Contenido inapropiado o spam</li>
+                                <li>Falta de evidencia creíble</li>
+                            </ul>
+                            <p>Si tu reporte fue rechazado, revisa el motivo en tu correo y puedes volver a enviarlo con las correcciones necesarias.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CUENTA -->
+        <div class="faq-category" id="cuenta">
+            <div class="faq-category-title">
+                <i class="fas fa-user-cog" style="color: var(--color-secondary);"></i>
+                Gestión de Cuenta
+            </div>
+
+            <div class="accordion" id="accordionCuenta">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#c1">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿Cómo creo una cuenta?
+                        </button>
+                    </h2>
+                    <div id="c1" class="accordion-collapse collapse show" data-bs-parent="#accordionCuenta">
+                        <div class="accordion-body">
+                            <ol>
+                                <li>Haz clic en "Ingresar" en la barra de navegación</li>
+                                <li>Selecciona "Crear nueva cuenta"</li>
+                                <li>Completa el formulario con tus datos</li>
+                                <li>Verifica tu correo electrónico</li>
+                                <li>¡Listo! Ya puedes reportar incidentes</li>
+                            </ol>
+                            <p><strong>Nota:</strong> No necesitas cuenta para ver el mapa y estadísticas, solo para crear reportes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c2">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿Cómo cambio mi contraseña?
+                        </button>
+                    </h2>
+                    <div id="c2" class="accordion-collapse collapse" data-bs-parent="#accordionCuenta">
+                        <div class="accordion-body">
+                            <ol>
+                                <li>Inicia sesión en tu cuenta</li>
+                                <li>Ve a "Mi Perfil"</li>
+                                <li>Selecciona "Cambiar contraseña"</li>
+                                <li>Ingresa tu contraseña actual y la nueva</li>
+                                <li>Confirma los cambios</li>
+                            </ol>
+                            <p>Si olvidaste tu contraseña, usa la opción "Recuperar contraseña" en la página de inicio de sesión.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GENERAL -->
+        <div class="faq-category" id="general">
+            <div class="faq-category-title">
+                <i class="fas fa-question" style="color: var(--color-warning);"></i>
+                Preguntas Generales
+            </div>
+
+            <div class="accordion" id="accordionGeneral">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#g1">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿Es gratis usar la plataforma?
+                        </button>
+                    </h2>
+                    <div id="g1" class="accordion-collapse collapse show" data-bs-parent="#accordionGeneral">
+                        <div class="accordion-body">
+                            Sí, Huella Urbana es completamente <strong>gratuito</strong> para todos los usuarios. No cobramos ninguna tarifa por crear reportes, acceder al mapa o ver estadísticas. Nuestro proyecto es financiado por donaciones y colaboraciones con organizaciones locales.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g2">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿Mis datos personales están seguros?
+                        </button>
+                    </h2>
+                    <div id="g2" class="accordion-collapse collapse" data-bs-parent="#accordionGeneral">
+                        <div class="accordion-body">
+                            Absolutamente. Implementamos las mejores prácticas de seguridad:
+                            <ul>
+                                <li>Encriptación de datos sensibles</li>
+                                <li>Cumplimiento con leyes de protección de datos</li>
+                                <li>No compartimos información con terceros</li>
+                                <li>Tus reportes se publican de forma anónima en el mapa</li>
+                                <li>Solo moderadores autorizados acceden a la información completa</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#g3">
+                            <i class="fas fa-question-circle me-2"></i>
+                            ¿Cómo puedo colaborar con el proyecto?
+                        </button>
+                    </h2>
+                    <div id="g3" class="accordion-collapse collapse" data-bs-parent="#accordionGeneral">
+                        <div class="accordion-body">
+                            ¡Hay muchas formas de ayudar!
+                            <ul>
+                                <li><strong>Reporta incidentes:</strong> Mientras más datos, mejor análisis</li>
+                                <li><strong>Difunde el proyecto:</strong> Comparte en redes sociales</li>
+                                <li><strong>Únete como moderador:</strong> Contáctanos si quieres ser voluntario</li>
+                                <li><strong>Dona:</strong> Ayúdanos a mantener la plataforma</li>
+                                <li><strong>Propón mejoras:</strong> Tus ideas son valiosas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- CONTACT BANNER -->
+    <div class="contact-banner">
+        <h3><i class="fas fa-question-circle"></i> ¿No encontraste tu respuesta?</h3>
+        <p style="font-size: 1.1rem; margin-bottom: 2rem;">Nuestro equipo está listo para ayudarte con cualquier consulta adicional</p>
+        <button class="btn-contact" onclick="window.location.href='{% url 'contacto' %}'">
+            <i class="fas fa-envelope"></i> Contáctanos
+        </button>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/ayuda.js' %}"></script>
+{% endblock %}

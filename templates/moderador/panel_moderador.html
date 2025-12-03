@@ -1,0 +1,906 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}🛠️ Panel de Moderación{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="{% static 'css/panel_de_moderador.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="moderation-layout">
+    
+    <!-- ===== SIDEBAR DE FILTROS ===== -->
+    <aside class="filters-sidebar">
+        <div class="sidebar-card">
+            <!-- Header -->
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">
+                    <i class="fas fa-sliders-h"></i>
+                    Filtros
+                </h2>
+            </div>
+
+            <!-- Body con filtros -->
+            <div class="sidebar-body">
+                
+                <!-- Filtro Estado -->
+                <div class="filter-group">
+                    <div class="filter-title">
+                        <i class="fas fa-tasks"></i>
+                        Estado del Reporte
+                    </div>
+                    <div class="filter-dropdown" id="statusFilter">
+                        <button class="filter-btn active" onclick="toggleFilter('statusFilter')">
+                            <span class="filter-btn-content">
+                                <i class="fas fa-clock"></i>
+                                Pendientes
+                            </span>
+                            <i class="fas fa-chevron-down filter-chevron"></i>
+                        </button>
+                        <div class="filter-options">
+                            <div class="filter-option selected" data-status="pendiente" onclick="selectFilter('status', 'pendiente', 'Pendientes', 'fa-clock')">
+                                <i class="fas fa-clock"></i> Pendientes
+                            </div>
+                            <div class="filter-option" data-status="aprobado" onclick="selectFilter('status', 'aprobado', 'Aprobados', 'fa-check-circle')">
+                                <i class="fas fa-check-circle"></i> Aprobados
+                            </div>
+                            <div class="filter-option" data-status="rechazado" onclick="selectFilter('status', 'rechazado', 'Rechazados', 'fa-times-circle')">
+                                <i class="fas fa-times-circle"></i> Rechazados
+                            </div>
+                            <div class="filter-option" data-status="all" onclick="selectFilter('status', 'all', 'Todos los estados', 'fa-list')">
+                                <i class="fas fa-list"></i> Todos los estados
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtro Gravedad -->
+                <div class="filter-group">
+                    <div class="filter-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Gravedad del Ataque
+                    </div>
+                    <div class="filter-dropdown" id="severityFilter">
+                        <button class="filter-btn" onclick="toggleFilter('severityFilter')">
+                            <span class="filter-btn-content">
+                                <i class="fas fa-list"></i>
+                                Todas las gravedades
+                            </span>
+                            <i class="fas fa-chevron-down filter-chevron"></i>
+                        </button>
+                        <div class="filter-options">
+                            <div class="filter-option selected" data-severity="all" onclick="selectFilter('severity', 'all', 'Todas las gravedades', 'fa-list')">
+                                <i class="fas fa-list"></i> Todas las gravedades
+                            </div>
+                            <div class="filter-option" data-severity="grave" onclick="selectFilter('severity', 'grave', 'Graves', 'fa-exclamation-triangle')">
+                                <i class="fas fa-exclamation-triangle"></i> Graves
+                            </div>
+                            <div class="filter-option" data-severity="moderado" onclick="selectFilter('severity', 'moderado', 'Moderados', 'fa-exclamation-circle')">
+                                <i class="fas fa-exclamation-circle"></i> Moderados
+                            </div>
+                            <div class="filter-option" data-severity="leve" onclick="selectFilter('severity', 'leve', 'Leves', 'fa-info-circle')">
+                                <i class="fas fa-info-circle"></i> Leves
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtro Tipo de Animal -->
+                <div class="filter-group">
+                    <div class="filter-title">
+                        <i class="fas fa-paw"></i>
+                        Tipo de Animal Víctima
+                    </div>
+                    <div class="filter-dropdown" id="animalFilter">
+                        <button class="filter-btn" onclick="toggleFilter('animalFilter')">
+                            <span class="filter-btn-content">
+                                <i class="fas fa-list"></i>
+                                Todos los animales
+                            </span>
+                            <i class="fas fa-chevron-down filter-chevron"></i>
+                        </button>
+                        <div class="filter-options">
+                            <div class="filter-option selected" data-animal="all" onclick="selectFilter('animal', 'all', 'Todos los animales', 'fa-list')">
+                                <i class="fas fa-list"></i> Todos los animales
+                            </div>
+                            <div class="filter-option" data-animal="perro" onclick="selectFilter('animal', 'perro', 'Perros', 'fa-dog')">
+                                <i class="fas fa-dog"></i> Perros
+                            </div>
+                            <div class="filter-option" data-animal="gato" onclick="selectFilter('animal', 'gato', 'Gatos', 'fa-cat')">
+                                <i class="fas fa-cat"></i> Gatos
+                            </div>
+                            <div class="filter-option" data-animal="otro" onclick="selectFilter('animal', 'otro', 'Otros', 'fa-paw')">
+                                <i class="fas fa-paw"></i> Otros
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtro Anónimo -->
+                <div class="filter-group">
+                    <div class="filter-title">
+                        <i class="fas fa-user-secret"></i>
+                        Reporte Anónimo
+                    </div>
+                    <div class="filter-dropdown" id="anonymousFilter">
+                        <button class="filter-btn" onclick="toggleFilter('anonymousFilter')">
+                            <span class="filter-btn-content">
+                                <i class="fas fa-list"></i>
+                                Todos
+                            </span>
+                            <i class="fas fa-chevron-down filter-chevron"></i>
+                        </button>
+                        <div class="filter-options">
+                            <div class="filter-option selected" data-anonymous="all" onclick="selectFilter('anonymous', 'all', 'Todos', 'fa-list')">
+                                <i class="fas fa-list"></i> Todos
+                            </div>
+                            <div class="filter-option" data-anonymous="true" onclick="selectFilter('anonymous', 'true', 'Sí (Anónimo)', 'fa-user-secret')">
+                                <i class="fas fa-user-secret"></i> Sí (Anónimo)
+                            </div>
+                            <div class="filter-option" data-anonymous="false" onclick="selectFilter('anonymous', 'false', 'No (Con datos)', 'fa-user')">
+                                <i class="fas fa-user"></i> No (Con datos)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón Exportar -->
+                <div class="export-section">
+                    <a href="{% url 'exportar_csv' %}" class="export-btn">
+                        <i class="fas fa-download"></i>
+                        Exportar a CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== ÁREA DE CONTENIDO ===== -->
+    <main class="content-area">
+        
+        <!-- Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card pending">
+                <div class="stat-number" id="pendingCount">{{ pendientes }}</div>
+                <div class="stat-label">Pendientes</div>
+            </div>
+            <div class="stat-card approved">
+                <div class="stat-number">{{ aprobados }}</div>
+                <div class="stat-label">Aprobados</div>
+            </div>
+            <div class="stat-card rejected">
+                <div class="stat-number">{{ rechazados }}</div>
+                <div class="stat-label">Rechazados</div>
+            </div>
+            <div class="stat-card total">
+                <div class="stat-number">{{ todos }}</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+
+       <!-- Alert Contador - ACTUALIZADO -->
+        {% if reportes %}
+        <div class="alert-info" id="alertContador">
+            <div class="alert-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="alert-content">
+                <h5>Reportes Filtrados</h5>
+                <p>
+                    Mostrando <span class="counter-highlight">{{ reportes.start_index }}</span>-<span class="counter-highlight">{{ reportes.end_index }}</span> 
+                    de <span class="counter-highlight" id="contadorReportes">{{ total_filtrados }}</span> reportes
+                </p>
+            </div>
+        </div>
+
+        <!-- Lista de Reportes -->
+        <div class="reports-list">
+            {% for reporte in reportes %}
+            <article class="report-card"
+                data-status="{{ reporte.estado }}"
+                data-severity="{{ reporte.gravedad }}"
+                data-animal="{{ reporte.tipo_animal }}"
+                data-anonymous="{% if reporte.anonimo %}true{% else %}false{% endif %}">
+
+                <!-- Header del Reporte -->
+                <header class="report-top">
+                    <div class="report-top-left">
+                        <div class="report-id-badge">
+                            <i class="fas fa-hashtag"></i>
+                            REP-{{ reporte.id }}
+                        </div>
+                        <div class="severity-tag severity-{{ reporte.gravedad }}">
+                            {{ reporte.get_gravedad_display }}
+                        </div>
+                    </div>
+                    <div class="status-badge status-{{ reporte.estado }}">
+                        {% if reporte.estado == 'pendiente' %}
+                            <i class="fas fa-clock"></i> Pendiente
+                        {% elif reporte.estado == 'aprobado' %}
+                            <i class="fas fa-check-circle"></i> Aprobado
+                        {% else %}
+                            <i class="fas fa-times-circle"></i> Rechazado
+                        {% endif %}
+                    </div>
+                </header>
+
+                <!-- Cuerpo del Reporte -->
+                <div class="report-content">
+                    
+                    <!-- Título -->
+                    <div class="report-title-section">
+                        <h3 class="report-main-title">{{ reporte.titulo }}</h3>
+                        <p class="report-subtitle">Reportado el {{ reporte.fecha|date:"d/m/Y" }} {% if reporte.hora %}a las {{ reporte.hora|time:"H:i" }} hrs{% endif %}</p>
+                    </div>
+
+                    <!-- Grid de Información -->
+                    <div class="info-grid">
+                        <div class="info-box">
+                            <div class="info-icon-box">
+                                <i class="fas fa-paw"></i>
+                            </div>
+                            <div class="info-text">
+                                <div class="info-label">Animal Víctima</div>
+                                <div class="info-value">{{ reporte.get_tipo_animal_display|default:"No indicado" }}</div>
+                            </div>
+                        </div>
+
+                        <div class="info-box">
+                            <div class="info-icon-box">
+                                <i class="fas fa-dog"></i>
+                            </div>
+                            <div class="info-text">
+                                <div class="info-label">Perros Agresores</div>
+                                <div class="info-value">{{ reporte.cantidad_perros|default_if_none:"Sin dato" }}</div>
+                            </div>
+                        </div>
+
+                        <div class="info-box">
+                            <div class="info-icon-box">
+                                <i class="fas fa-user-secret"></i>
+                            </div>
+                            <div class="info-text">
+                                <div class="info-label">Tipo de Reporte</div>
+                                <div class="info-value">
+                                    {% if reporte.anonimo %}
+                                        <span class="badge bg-secondary">Anónimo</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Identificado</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info-box">
+                            <div class="info-icon-box">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="info-text">
+                                <div class="info-label">Ubicación</div>
+                                <div class="info-value">{{ reporte.direccion|default:"No indicada" }}</div>
+                            </div>
+                        </div>
+
+                        <div class="info-box">
+                            <div class="info-icon-box">
+                                <i class="fas fa-map-signs"></i>
+                            </div>
+                            <div class="info-text">
+                                <div class="info-label">Sector</div>
+                                <div class="info-value">{{ reporte.get_sector_display|default:"No especificado" }}</div>
+                            </div>
+                        </div>
+
+                        <div class="info-box">
+                            <div class="info-icon-box">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="info-text">
+                                <div class="info-label">Fecha del Incidente</div>
+                                <div class="info-value">{{ reporte.fecha|date:"d/m/Y" }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if reporte.fotos.all.count %}
+                    <div class="photos-wrapper">
+                        <div class="photos-title">
+                            <i class="fas fa-camera"></i>
+                            Evidencia Fotográfica
+                            <span class="photos-count">{{ reporte.fotos.all.count }}</span>
+                        </div>
+
+                        <div class="photos-scroll">
+                            {% for foto in reporte.fotos.all %}
+                            <div class="photo-card" onclick="showImageModal('{{ foto.archivo.url }}')">
+                                <img src="{{ foto.archivo.url }}" alt="Evidencia {{ forloop.counter }}">
+                                <div class="photo-overlay">
+                                    <i class="fas fa-search-plus"></i>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="no-photos">No hay fotos disponibles</p>
+                    {% endif %}
+
+
+                    <!-- Botones de Acción -->
+                    <div class="report-actions">
+                        {% if reporte.estado == 'pendiente' %}
+                        <button class="action-btn btn-approve" onclick="aprobar({{ reporte.id }})">
+                            <i class="fas fa-check"></i>
+                            Aprobar Reporte
+                        </button>
+                        <button class="action-btn btn-reject" onclick="rechazar({{ reporte.id }})">
+                            <i class="fas fa-times"></i>
+                            Rechazar Reporte
+                        </button>
+                        {% endif %}
+                        <button class="action-btn btn-view" onclick="verDetalles({{ reporte.id }})">
+                            <i class="fas fa-eye"></i>
+                            Ver Detalles Completos
+                        </button>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+        <!-- FIN de reports-list -->
+
+        <!-- ========================================
+             PAGINACIÓN - AGREGAR AQUÍ
+             ======================================== -->
+        {% if reportes.has_other_pages %}
+        <div class="pagination-container">
+            <nav aria-label="Paginación de reportes">
+                <ul class="pagination-list">
+                    
+                    <!-- Botón Primera Página -->
+                    {% if reportes.has_previous %}
+                    <li class="pagination-item">
+                        <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                           class="pagination-link" 
+                           title="Primera página">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    <!-- Botón Anterior -->
+                    {% if reportes.has_previous %}
+                    <li class="pagination-item">
+                        <a href="?page={{ reportes.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                           class="pagination-link" 
+                           title="Página anterior">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="pagination-item disabled">
+                        <span class="pagination-link">
+                            <i class="fas fa-angle-left"></i>
+                        </span>
+                    </li>
+                    {% endif %}
+                    
+                    <!-- Números de Página -->
+                    {% for num in reportes.paginator.page_range %}
+                        {% if reportes.number == num %}
+                        <li class="pagination-item active">
+                            <span class="pagination-link">{{ num }}</span>
+                        </li>
+                        {% elif num > reportes.number|add:'-3' and num < reportes.number|add:'3' %}
+                        <li class="pagination-item">
+                            <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                               class="pagination-link">
+                                {{ num }}
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <!-- Botón Siguiente -->
+                    {% if reportes.has_next %}
+                    <li class="pagination-item">
+                        <a href="?page={{ reportes.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                           class="pagination-link" 
+                           title="Página siguiente">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="pagination-item disabled">
+                        <span class="pagination-link">
+                            <i class="fas fa-angle-right"></i>
+                        </span>
+                    </li>
+                    {% endif %}
+                    
+                    <!-- Botón Última Página -->
+                    {% if reportes.has_next %}
+                    <li class="pagination-item">
+                        <a href="?page={{ reportes.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                           class="pagination-link" 
+                           title="Última página">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                </ul>
+            </nav>
+            
+            <!-- Info de paginación -->
+            <div class="pagination-info">
+                Página {{ reportes.number }} de {{ reportes.paginator.num_pages }}
+            </div>
+        </div>
+        {% endif %}
+        <!-- FIN PAGINACIÓN -->
+
+        {% else %}
+        <!-- Estado Vacío -->
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-inbox"></i>
+            </div>
+            <p class="empty-text">No hay reportes con el filtro seleccionado</p>
+        </div>
+        {% endif %}
+    </main>
+   
+   <template id="modalDetallesTemplate">
+  <div class="modal-premium">
+
+    <div class="modal-header-custom">
+      <h2 class="modal-title-custom">
+        <i class="fas fa-file-alt"></i>
+        <span id="modal-titulo"></span>
+      </h2>
+      <p class="modal-subtitle-custom">
+        <i class="fas fa-calendar-alt"></i>
+        <span id="modal-fecha"></span>
+      </p>
+    </div>
+
+    <!-- PESTAÑAS -->
+    <div class="tabs-container">
+      <button class="tab-button active" onclick="switchTab(event, 'tab-incidente')">
+        <i class="fas fa-paw"></i><span>Información del Incidente</span>
+      </button>
+      <button class="tab-button" onclick="switchTab(event, 'tab-reportante')">
+        <i class="fas fa-user"></i><span>Datos del Reportante</span>
+      </button>
+      <button class="tab-button" onclick="switchTab(event, 'tab-ubicacion')">
+        <i class="fas fa-map-marker-alt"></i><span>Ubicación</span>
+      </button>
+      <button class="tab-button" onclick="switchTab(event, 'tab-descripcion')">
+        <i class="fas fa-align-left"></i><span>Descripción</span>
+      </button>
+    </div>
+
+    <!-- TAB INCIDENCIA -->
+    <div id="tab-incidente" class="tab-content active">
+      <div class="detail-grid">
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-paw"></i> Tipo de Animal</div>
+          <div class="detail-value" id="modal-tipo-animal"></div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-dog"></i> Cantidad de Perros Agresores</div>
+          <div class="detail-value" id="modal-cantidad-perros"></div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-exclamation-triangle"></i> Gravedad</div>
+          <div class="detail-value" id="modal-gravedad"></div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-map"></i> Dirección Exacta</div>
+          <div class="detail-value" id="modal-direccion"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB REPORTANTE -->
+    <div id="tab-reportante" class="tab-content">
+      <div class="detail-grid">
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-user"></i> Nombre</div>
+          <div class="detail-value" id="modal-nombre"></div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-envelope"></i> Email</div>
+          <div class="detail-value" id="modal-email"></div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-phone"></i> Teléfono</div>
+          <div class="detail-value" id="modal-telefono"></div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-mask"></i> Reporte Anónimo</div>
+          <div class="detail-value" id="modal-anonimo"></div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-user-shield"></i> Usuario Registrado</div>
+          <div class="detail-value" id="modal-usuario"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB UBICACIÓN -->
+    <div id="tab-ubicacion" class="tab-content">
+      <div class="detail-grid">
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-map-signs"></i> Sector</div>
+          <div class="detail-value" id="modal-sector"></div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-map"></i> Dirección</div>
+          <div class="detail-value" id="modal-direccion-ubicacion"></div>
+        </div>
+
+        <div class="detail-item">
+          <div class="detail-label"><i class="fas fa-map-pin"></i> Coordenadas</div>
+          <div class="detail-value" id="modal-coordenadas"></div>
+        </div>
+
+      </div>
+
+      <a href="#" id="modal-map-link" target="_blank" class="map-link">
+        <i class="fas fa-map-marked-alt"></i>
+        Ver en Google Maps
+      </a>
+    </div>
+
+    <!-- TAB DESCRIPCIÓN -->
+    <div id="tab-descripcion" class="tab-content">
+      <div class="description-box">
+        <p id="modal-descripcion"></p>
+      </div>
+    </div>
+
+  </div>
+</template>
+
+</div>
+
+<!-- JAVASCRIPT -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+// ========================================
+// INICIALIZAR FILTROS DESDE LA URL
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Leer parámetros de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Restaurar estado de filtros
+    currentFilters.status = urlParams.get('estado') || 'pendiente';
+    currentFilters.severity = urlParams.get('gravedad') || 'all';
+    currentFilters.animal = urlParams.get('animal') || 'all';
+    currentFilters.anonymous = urlParams.get('anonimo') || 'all';
+    
+    // Actualizar UI de los filtros
+    updateFilterUI();
+});
+
+// Cerrar dropdowns al hacer clic fuera
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.filter-dropdown')) {
+        document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('open'));
+    }
+});
+
+// Toggle dropdown
+function toggleFilter(id) {
+    const dropdown = document.getElementById(id);
+    const wasOpen = dropdown.classList.contains('open');
+    
+    document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('open'));
+    
+    if (!wasOpen) dropdown.classList.add('open');
+}
+
+// Filtros activos
+let currentFilters = {
+    status: 'pendiente',
+    severity: 'all',
+    animal: 'all',
+    anonymous: 'all'
+};
+
+// Mapeo de valores para los labels
+const filterLabels = {
+    status: {
+        'pendiente': { label: 'Pendientes', icon: 'fa-clock' },
+        'aprobado': { label: 'Aprobados', icon: 'fa-check-circle' },
+        'rechazado': { label: 'Rechazados', icon: 'fa-times-circle' },
+        'all': { label: 'Todos los estados', icon: 'fa-list' }
+    },
+    severity: {
+        'grave': { label: 'Graves', icon: 'fa-exclamation-triangle' },
+        'moderado': { label: 'Moderados', icon: 'fa-exclamation-circle' },
+        'leve': { label: 'Leves', icon: 'fa-info-circle' },
+        'all': { label: 'Todas las gravedades', icon: 'fa-list' }
+    },
+    animal: {
+        'perro': { label: 'Perros', icon: 'fa-dog' },
+        'gato': { label: 'Gatos', icon: 'fa-cat' },
+        'otro': { label: 'Otros', icon: 'fa-paw' },
+        'all': { label: 'Todos los animales', icon: 'fa-list' }
+    },
+    anonymous: {
+        'true': { label: 'Sí (Anónimo)', icon: 'fa-user-secret' },
+        'false': { label: 'No (Con datos)', icon: 'fa-user' },
+        'all': { label: 'Todos', icon: 'fa-list' }
+    }
+};
+
+// Actualizar la UI de los filtros según el estado actual
+function updateFilterUI() {
+    // Actualizar cada dropdown
+    updateDropdownUI('statusFilter', 'status', currentFilters.status);
+    updateDropdownUI('severityFilter', 'severity', currentFilters.severity);
+    updateDropdownUI('animalFilter', 'animal', currentFilters.animal);
+    updateDropdownUI('anonymousFilter', 'anonymous', currentFilters.anonymous);
+}
+
+// Actualizar un dropdown específico
+function updateDropdownUI(dropdownId, filterType, value) {
+    const dropdown = document.getElementById(dropdownId);
+    const button = dropdown.querySelector('.filter-btn');
+    const config = filterLabels[filterType][value];
+    
+    if (config) {
+        button.querySelector('.filter-btn-content').innerHTML = `
+            <i class="fas ${config.icon}"></i>
+            ${config.label}
+        `;
+        
+        // Marcar como activo si no es 'all'
+        if (value !== 'all') {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    }
+    
+    // Actualizar opciones seleccionadas
+    dropdown.querySelectorAll('.filter-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    
+    const dataAttr = `data-${filterType}`;
+    const selectedOption = dropdown.querySelector(`[${dataAttr}="${value}"]`);
+    if (selectedOption) {
+        selectedOption.classList.add('selected');
+    }
+}
+
+// Seleccionar filtro
+function selectFilter(type, value, label, icon) {
+    currentFilters[type] = value;
+    
+    const dropdown = document.getElementById(type + 'Filter');
+    const button = dropdown.querySelector('.filter-btn');
+    
+    button.querySelector('.filter-btn-content').innerHTML = `
+        <i class="fas ${icon}"></i>
+        ${label}
+    `;
+    
+    // Agregar/quitar clase active
+    if (value !== 'all') {
+        button.classList.add('active');
+    } else {
+        button.classList.remove('active');
+    }
+    
+    dropdown.querySelectorAll('.filter-option').forEach(opt => opt.classList.remove('selected'));
+    dropdown.querySelector(`[data-${type}="${value}"]`).classList.add('selected');
+    
+    dropdown.classList.remove('open');
+    
+    applyFilters();
+}
+
+// Aplicar filtros (recarga la página con los parámetros correctos)
+function applyFilters() {
+    const params = new URLSearchParams();
+    
+    // Agregar filtros activos (solo los que no son 'all')
+    if (currentFilters.status !== 'all') {
+        params.set('estado', currentFilters.status);
+    }
+    
+    if (currentFilters.severity !== 'all') {
+        params.set('gravedad', currentFilters.severity);
+    }
+    
+    if (currentFilters.animal !== 'all') {
+        params.set('animal', currentFilters.animal);
+    }
+    
+    if (currentFilters.anonymous !== 'all') {
+        params.set('anonimo', currentFilters.anonymous);
+    }
+    
+    // Redirigir con los nuevos parámetros
+    window.location.search = params.toString();
+}
+
+// Cookie CSRF
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + "=")) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Aprobar
+function aprobar(id) {
+    Swal.fire({
+        title: "¿Aprobar este reporte?",
+        text: "El reporte será publicado en el mapa público.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#10B981",
+        cancelButtonColor: "#6B7280",
+        confirmButtonText: '<i class="fas fa-check"></i> Sí, aprobar',
+        cancelButtonText: 'Cancelar'
+    }).then(result => {
+        if (result.isConfirmed) {
+            fetch(`/aprobar/${id}/`)
+                .then(res => res.json())
+                .then(data => Swal.fire({
+                    title: "¡Aprobado!",
+                    text: data.mensaje,
+                    icon: "success",
+                    confirmButtonColor: "#8B5CF6"
+                }).then(() => location.reload()));
+        }
+    });
+}
+
+// Rechazar
+function rechazar(id) {
+    Swal.fire({
+        title: "¿Rechazar este reporte?",
+        input: "textarea",
+        inputLabel: "Motivo del rechazo (obligatorio)",
+        inputPlaceholder: "Escribe el motivo...",
+        showCancelButton: true,
+        confirmButtonColor: "#EF4444",
+        cancelButtonColor: "#6B7280",
+        confirmButtonText: '<i class="fas fa-times"></i> Rechazar',
+        cancelButtonText: 'Cancelar',
+        inputValidator: v => !v && "Debes ingresar un motivo"
+    }).then(result => {
+        if (result.isConfirmed) {
+            fetch(`/rechazar/${id}/`, {
+                method: "POST",
+                headers: {"X-CSRFToken": getCookie("csrftoken")},
+                body: new URLSearchParams({motivo: result.value})
+            })
+                .then(res => res.json())
+                .then(data => Swal.fire({
+                    title: "Rechazado",
+                    text: data.mensaje,
+                    icon: "info",
+                    confirmButtonColor: "#8B5CF6"
+                }).then(() => location.reload()));
+        }
+    });
+}
+
+// Función global para cambiar de pestaña
+function switchTab(event, tabId) {
+    const buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    
+    const contents = document.querySelectorAll('.tab-content');
+    contents.forEach(content => content.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+}
+
+// Ver detalles del reporte
+function verDetalles(id) {
+    fetch(`/detalles/${id}/`)
+        .then(res => res.json())
+        .then(data => {
+            const template = document.getElementById('modalDetallesTemplate');
+            const modalHTML = template.innerHTML;
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = modalHTML;
+
+            // TÍTULO Y FECHA
+            tempDiv.querySelector('#modal-titulo').textContent = data.titulo || 'Sin título';
+            tempDiv.querySelector('#modal-fecha').textContent = `${data.fecha} ${data.hora ? '- ' + data.hora : ''}`;
+
+            // INFORMACIÓN DEL INCIDENTE
+            tempDiv.querySelector('#modal-tipo-animal').textContent = data.tipo_animal || "No especificado";
+            tempDiv.querySelector('#modal-cantidad-perros').textContent = data.cantidad_perros || "Sin dato";
+            tempDiv.querySelector('#modal-gravedad').textContent = data.gravedad || "Sin dato";
+            tempDiv.querySelector('#modal-direccion').textContent = data.direccion || "No indicada";
+
+            // DATOS DEL REPORTANTE
+            tempDiv.querySelector('#modal-nombre').textContent = 
+                data.nombre_reportante && data.nombre_reportante.trim() !== "" ? data.nombre_reportante : "Anónimo";
+            tempDiv.querySelector('#modal-email').textContent = 
+                data.email_reportante && data.email_reportante.trim() !== "" ? data.email_reportante : "No proporcionado";
+            tempDiv.querySelector('#modal-telefono').textContent = 
+                data.telefono_reportante && data.telefono_reportante.trim() !== "" ? data.telefono_reportante : "No proporcionado";
+            tempDiv.querySelector('#modal-anonimo').textContent = data.anonimo ? "Sí" : "No";
+            tempDiv.querySelector('#modal-usuario').textContent = data.usuario ? data.usuario : "No asociado";
+
+            // UBICACIÓN
+            tempDiv.querySelector('#modal-sector').textContent = data.sector || "No especificado";
+            tempDiv.querySelector('#modal-direccion-ubicacion').textContent = data.direccion || "No indicada";
+            tempDiv.querySelector('#modal-coordenadas').textContent = 
+                data.latitud && data.longitud ? `${data.latitud}, ${data.longitud}` : "Sin coordenadas";
+            tempDiv.querySelector('#modal-map-link').href = 
+                data.latitud && data.longitud ? `https://www.google.com/maps?q=${data.latitud},${data.longitud}` : "#";
+
+            // DESCRIPCIÓN
+            tempDiv.querySelector('#modal-descripcion').textContent = 
+                data.descripcion && data.descripcion.trim() !== "" ? data.descripcion : "Sin descripción proporcionada";
+
+            // MOSTRAR MODAL
+            Swal.fire({
+                html: tempDiv.innerHTML,
+                showConfirmButton: true,
+                confirmButtonText: '<i class="fas fa-times"></i> Cerrar',
+                confirmButtonColor: "#8B5CF6",
+                showCloseButton: true,
+                width: "90%",
+                padding: "0",
+                customClass: {
+                    popup: "swal-detalles"
+                }
+            });
+        });
+}
+
+// Ver foto ampliada
+function showImageModal(src) {
+    Swal.fire({
+        imageUrl: src,
+        imageAlt: 'Evidencia fotográfica',
+        showConfirmButton: false,
+        showCloseButton: true,
+        width: "900px",
+        background: '#000',
+        backdrop: 'rgba(0,0,0,0.9)'
+    });
+}
+</script>
+
+{% endblock %}

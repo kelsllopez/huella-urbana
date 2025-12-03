@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load l10n %}
+
+{% block title %}🐾 Recolector de Ataques - Inicio{% endblock %}
+
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-section fade-in" style="margin-top: 0;">
+  <div class="container text-center">
+    <h1 class="hero-title">🐾 Recolector de Ataques de Perros Callejeros</h1>
+    <p class="hero-subtitle">
+      Plataforma de Monitoreo y Concientización Ciudadana | Valdivia, Los Ríos
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat-card">
+        <span class="stat-number">{{ total_reportes|default:0 }}</span>
+        <span class="stat-label">Reportes Totales</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ total_verificados|default:0 }}</span>
+        <span class="stat-label">Verificados</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ total_mes|default:0 }}</span>
+        <span class="stat-label">Este Mes</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ total_pendientes|default:0 }}</span>
+        <span class="stat-label">Pendientes</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<main class="container">
+
+  <!-- FEATURES -->
+  <div class="row g-4 mb-5 fade-in">
+    <div class="col-md-4">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-camera"></i>
+        </div>
+        <h3 class="feature-title">Reportes Verificables</h3>
+        <p class="feature-description">
+          Los ciudadanos pueden reportar incidentes con fotografías, ubicación GPS y descripción detallada.
+        </p>
+        <a href="{% url 'nuevo_reporte' %}" class="btn btn-primary-custom mt-3 w-100">
+          <i class="fas fa-plus-circle"></i> Crear Reporte
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-map-marked-alt"></i>
+        </div>
+        <h3 class="feature-title">Mapa Georreferenciado</h3>
+        <p class="feature-description">
+          Visualiza en tiempo real todos los ataques confirmados en Valdivia y alrededores con marcadores interactivos.
+        </p>
+        <a href="{% url 'mapa' %}" class="btn btn-secondary-custom mt-3 w-100">
+          <i class="fas fa-eye"></i> Ver Mapa Completo
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h3 class="feature-title">Estadísticas en Vivo</h3>
+        <p class="feature-description">
+          Accede a gráficos y análisis estadísticos actualizados para apoyar decisiones basadas en datos.
+        </p>
+        <a href="{% url 'estadisticas' %}" class="btn btn-primary-custom mt-3 w-100">
+          <i class="fas fa-chart-bar"></i> Ver Estadísticas
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAPA -->
+  <div class="map-container fade-in" id="mapa">
+    <h2 class="text-center mb-4" style="color: var(--color-primary); font-weight: 700;">
+      <i class="fas fa-map-marked-alt"></i> Mapa de Incidentes Confirmados
+    </h2>
+    <div id="map"></div>
+    <div class="text-center mt-3">
+      <small class="text-muted">
+        <i class="fas fa-info-circle"></i>
+        Cada marcador representa un ataque aprobado por moderadores
+      </small>
+    </div>
+  </div>
+
+  <!-- INFORMACIÓN DEL PROYECTO -->
+  <section class="row mt-5 fade-in">
+    <div class="col-lg-6 mb-4">
+      <div class="feature-card">
+        <h3 class="feature-title">
+          <i class="fas fa-bullseye" style="color: var(--color-primary);"></i>
+          Objetivo del Proyecto
+        </h3>
+        <p class="feature-description">
+          Generar evidencia visual y datos estadísticos sobre ataques de perros callejeros
+          para apoyar a las autoridades y promover políticas de bienestar animal.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-lg-6 mb-4">
+      <div class="feature-card">
+        <h3 class="feature-title">
+          <i class="fas fa-shield-alt" style="color: var(--color-success);"></i>
+          Sistema de Moderación
+        </h3>
+        <p class="feature-description">
+          Todos los reportes pasan por validación de moderadores antes de mostrarse en el mapa público,
+          garantizando información confiable.
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const map = L.map("map").setView([-39.8142, -73.2459], 13);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "© OpenStreetMap contributors"
+  }).addTo(map);
+
+  const dangerIcon = L.icon({
+    iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+    shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
+  let tieneMarcadores = false;
+  const bounds = [];
+
+  // ==== Marcadores desde Django (aprobados) ====
+  {% for r in reportes %}
+    {% if r.estado == 'aprobado' and r.latitud and r.longitud %}
+      (function() {
+        const lat = parseFloat("{{ r.latitud|unlocalize }}");
+        const lng = parseFloat("{{ r.longitud|unlocalize }}");
+
+        if (!isNaN(lat) && !isNaN(lng)) {
+          const m = L.marker([lat, lng], { icon: dangerIcon })
+            .addTo(map)
+            .bindPopup(`
+              <div style="width:220px">
+                <h6 style="margin-bottom:4px;">
+                  <strong>🐾 {{ r.titulo|escapejs }}</strong>
+                </h6>
+                {% if r.fotos.first %}
+                  <img src="{{ r.fotos.first.archivo.url }}" alt="Foto del reporte"
+                       style="width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:6px;">
+                {% endif %}
+                <p style="font-size:0.85rem; margin-bottom:2px;">
+                  <b>📍 Sector:</b> {{ r.sector }}<br>
+                  <b>📅 Fecha:</b> {{ r.fecha }}
+                </p>
+              </div>
+            `);
+
+          bounds.push(m.getLatLng());
+          tieneMarcadores = true;
+        } else {
+          console.warn("Coordenadas inválidas para reporte ID {{ r.id }}:", "{{ r.latitud }}", "{{ r.longitud }}");
+        }
+      })();
+    {% endif %}
+  {% endfor %}
+
+  // Si no hay marcadores válidos, muestra uno de prueba
+  if (!tieneMarcadores) {
+    const m = L.marker([-39.8142, -73.2459], { icon: dangerIcon })
+      .addTo(map)
+      .bindPopup(`
+        <div style="width:220px">
+          <h6><strong>🐾 Marcador de prueba en Valdivia</strong></h6>
+          <p style="font-size:0.85rem;">
+            No hay reportes aprobados con coordenadas todavía.
+          </p>
+        </div>
+      `);
+    bounds.push(m.getLatLng());
+  }
+
+  // Ajusta zoom para cubrir todos los marcadores
+  if (bounds.length > 0) {
+    map.fitBounds(bounds, { padding: [40, 40] });
+  }
+});
+
+  </script>
+{% endblock %}

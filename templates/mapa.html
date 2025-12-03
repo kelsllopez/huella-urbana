@@ -1,0 +1,472 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}🐾 Mapa Interactivo{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'css/mapa.css' %}">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+{% endblock %}
+
+{% block content %}
+<div class="map-wrapper">
+
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="sidebar-panel" id="sidebar">
+        <div class="sidebar-header">
+            <h4 class="mb-2"><i class="fas fa-filter"></i> Filtros y Estadísticas</h4>
+            <small>Personaliza la visualización del mapa</small>
+        </div>
+
+        <div class="sidebar-content">
+
+            <div class="filter-section">
+                <div class="quick-stat">
+                    <h3 id="totalIncidentes">{{ total_reportes|default:0 }}</h3>
+                    <p>Incidentes Totales</p>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="fas fa-calendar"></i> Período
+                </div>
+                <div>
+                    <span class="filter-chip active" data-filter="all">Todos</span>
+                    <span class="filter-chip" data-filter="7d">Últimos 7 días</span>
+                    <span class="filter-chip" data-filter="30d">Último mes</span>
+                    <span class="filter-chip" data-filter="3m">3 meses</span>
+                    <span class="filter-chip" data-filter="6m">6 meses</span>
+                    <span class="filter-chip" data-filter="year">Año actual</span>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="fas fa-exclamation-triangle"></i> Gravedad
+                </div>
+                <div>
+                    <span class="filter-chip active" data-filter="all-severity">Todos</span>
+                    <span class="filter-chip" data-filter="grave">Graves</span>
+                    <span class="filter-chip" data-filter="moderado">Moderados</span>
+                    <span class="filter-chip" data-filter="leve">Leves</span>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-title">
+                    <i class="fas fa-map-marker-alt"></i> Sector
+                </div>
+                <select id="sectorSelect" class="form-select">
+                    <option value="all">Todos</option>
+                    <option>Centro</option>
+                    <option>Las Animas</option>
+                    <option>Collico</option>
+                    <option>Parque Saval</option>
+                    <option>Isla Teja</option>
+                    <option>Los Pelúes</option>
+                    <option>Angachilla</option>
+                    <option>Niebla</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+    <button class="toggle-sidebar" id="toggleBtn" onclick="toggleSidebar()">
+        <i class="fas fa-chevron-left" id="toggleIcon"></i>
+    </button>
+
+    <div class="floating-btn" onclick="window.location.href='{% url 'nuevo_reporte' %}'">
+        <i class="fas fa-plus"></i>
+    </div>
+
+    <!-- MODAL -->
+<!-- MODAL CON TABS -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal-container-tabs" onclick="event.stopPropagation()">
+        <!-- Header del Modal -->
+        <div class="modal-header-tabs">
+            <div class="modal-title-section">
+                <h4><i class="fas fa-file-alt"></i> <span id="modal-titulo-header">Detalles del Reporte</span></h4>
+                <p class="modal-date"><i class="fas fa-calendar-alt"></i> <span id="modal-fecha-header"></span></p>
+            </div>
+            <button class="modal-close-tabs" onclick="closeModal()">&times;</button>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-navigation">
+            <button class="tab-btn active" onclick="switchModalTab(event, 'tab-incidente')">
+                <i class="fas fa-paw"></i>
+                <span>Información del Incidente</span>
+            </button>
+
+            <button class="tab-btn" onclick="switchModalTab(event, 'tab-ubicacion')">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Ubicación</span>
+            </button>
+            <button class="tab-btn" onclick="switchModalTab(event, 'tab-descripcion')">
+                <i class="fas fa-align-left"></i>
+                <span>Descripción</span>
+            </button>
+        </div>
+
+        <!-- Modal Body con contenido de tabs -->
+        <div class="modal-body-tabs">
+            
+            <!-- TAB 1: Información del Incidente -->
+            <div id="tab-incidente" class="tab-content-modal active">
+                
+                <div class="detail-grid-modal">
+                    <div class="detail-item-modal">
+                        <div class="detail-label-modal">
+                            <i class="fas fa-paw"></i> Tipo de Animal
+                        </div>
+                        <div class="detail-value-modal" id="modal-tipo-animal"></div>
+                    </div>
+
+                    <div class="detail-item-modal">
+                        <div class="detail-label-modal">
+                            <i class="fas fa-dog"></i> Cantidad de Perros Agresores
+                        </div>
+                        <div class="detail-value-modal" id="modal-cantidad-perros"></div>
+                    </div>
+
+                    <div class="detail-item-modal">
+                        <div class="detail-label-modal">
+                            <i class="fas fa-exclamation-triangle"></i> Gravedad
+                        </div>
+                        <div class="detail-value-modal" id="modal-gravedad"></div>
+                    </div>
+
+                    
+                </div>
+            </div>
+
+
+            <!-- TAB 3: Ubicación -->
+            <div id="tab-ubicacion" class="tab-content-modal">
+                <div class="detail-grid-modal">
+                    <div class="detail-item-modal full-width">
+                        <div class="detail-label-modal">
+                            <i class="fas fa-map-signs"></i> Sector
+                        </div>
+                        <div class="detail-value-modal" id="modal-sector"></div>
+                    </div>
+
+                    <div class="detail-item-modal full-width">
+                        <div class="detail-label-modal">
+                            <i class="fas fa-map"></i> Dirección
+                        </div>
+                        <div class="detail-value-modal" id="modal-direccion"></div>
+                    </div>
+
+                    <div class="detail-item-modal full-width">
+                        <div class="detail-label-modal">
+                            <i class="fas fa-map-pin"></i> Coordenadas
+                        </div>
+                        <div class="detail-value-modal" id="modal-coordenadas"></div>
+                    </div>
+                </div>
+
+                <a href="#" id="modal-map-link" target="_blank" class="map-link-btn">
+                    <i class="fas fa-map-marked-alt"></i>
+                    Ver en Google Maps
+                </a>
+            </div>
+
+            <!-- TAB 4: Descripción -->
+            <div id="tab-descripcion" class="tab-content-modal">
+                <div class="description-box-modal">
+                    <p id="modal-descripcion"></p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer-tabs">
+            <button class="btn-close-modal" onclick="closeModal()">
+                <i class="fas fa-times"></i> Cerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+            <img id="lightboxImg" src="" alt="Imagen ampliada">
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    var reportesData = {{ reportes_json|safe }};
+</script>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+let map, markers = [], reportesData = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        document.getElementById("loader").style.display = "none";
+        initMap();
+    }, 800);
+});
+
+function initMap() {
+    map = L.map('map').setView([-39.8142, -73.2459], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    fetch("{% url 'mapa' %}", { headers: { "x-requested-with": "XMLHttpRequest" } })
+        .then(r => r.json())
+        .then(data => {
+            reportesData = data;
+            renderMarkers(reportesData);
+        });
+}
+
+function renderMarkers(data) {
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
+    data.forEach(rep => addMarker(rep));
+}
+
+function addMarker(rep) {
+    const color = rep.gravedad === "grave" ? "red" :
+                  rep.gravedad === "moderado" ? "orange" : "blue";
+
+    const icon = L.icon({
+        iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25,41]
+    });
+
+    const marker = L.marker([rep.lat, rep.lon], {icon})
+        .bindPopup(`
+            <strong>🐾  ${rep.titulo}</strong>
+            ${
+                rep.foto ?
+                `<div class="modal-image-container" onclick="openLightbox('${rep.foto}')"style="width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:6px;">
+                    <img src="${rep.foto}" alt="Foto del reporte">
+                </div>`
+                :
+                `<div class="modal-no-image">
+                    <i class="fas fa-image"></i>
+                    <p>Sin fotografía</p>
+                </div>`
+            }
+                  <b>📅 Fecha:</b> ${ rep.fecha }
+                  <br>
+                  <br>
+
+                  <button onclick="openModal(${rep.id})" class="btn btn-primary btn-sm">
+                Ver Detalles
+            </button>
+        `)
+        .addTo(map);
+
+    markers.push(marker);
+}
+/* ==============================
+   MODAL CON TABS - FINAL
+============================== */
+
+function openModal(id) {
+
+    const rep = reportesData.find(r => r.id === id);
+    if (!rep) return;
+
+    /* ============================
+       HEADER
+    ============================ */
+    document.getElementById("modal-titulo-header").textContent =
+        rep.titulo || "Detalles del Reporte";
+
+    document.getElementById("modal-fecha-header").textContent =
+        rep.fecha || "Fecha del incidente no disponible";
+
+
+    /* ============================
+       TAB 1 - Información del incidente
+    ============================ */
+    document.getElementById("modal-tipo-animal").textContent =
+        rep.tipo_animal || "Tipo de animal víctima no especificado";
+
+    document.getElementById("modal-cantidad-perros").textContent =
+        rep.cantidad_perros || "No especificado";
+
+    // Badge gravedad
+    const gravedadTexto = {
+        'leve': 'Leve',
+        'moderado': 'Moderado',
+        'grave': 'Grave'
+    }[rep.gravedad] || "Leve";
+
+    const gravedadClase = `severity-${rep.gravedad || "leve"}`;
+
+    document.getElementById("modal-gravedad").innerHTML =
+        `<span class="severity-badge ${gravedadClase}">${gravedadTexto}</span>`;
+
+    /* ============================
+       TAB 3 - Ubicación
+    ============================ */
+    document.getElementById("modal-sector").textContent =
+        rep.sector || "Sector no especificado";
+
+    document.getElementById("modal-direccion").textContent =
+        rep.direccion || "Dirección no especificada";
+
+    // Latitud y Longitud CORREGIDAS
+    if (rep.latitud && rep.longitud) {
+        document.getElementById("modal-coordenadas").textContent =
+            `Latitud: ${parseFloat(rep.latitud).toFixed(6)}, Longitud: ${parseFloat(rep.longitud).toFixed(6)}`;
+    } else {
+        document.getElementById("modal-coordenadas").textContent =
+            "Coordenadas no disponibles";
+    }
+
+    // Enlace Google Maps
+    const mapLink = document.getElementById("modal-map-link");
+    mapLink.href = `https://www.google.com/maps?q=${rep.latitud},${rep.longitud}`;
+
+
+    /* ============================
+       TAB 4 - Descripción
+    ============================ */
+    document.getElementById("modal-descripcion").textContent =
+        rep.descripcion || "Descripción detallada no disponible";
+
+
+    /* ============================
+       MOSTRAR MODAL
+    ============================ */
+    document.getElementById("modalOverlay").style.display = "block";
+    document.body.style.overflow = "hidden";
+
+    // Activar primer tab SIEMPRE
+    switchModalTabAuto('tab-incidente');
+}
+
+
+/* ============================================
+   FUNCIÓN PARA CAMBIAR TABS SIN event
+============================================ */
+function switchModalTabAuto(tabId) {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-content-modal").forEach(c => c.classList.remove("active"));
+    document.getElementById(tabId).classList.add("active");
+}
+
+/* ============================================
+   FUNCIÓN PARA CAMBIAR TABS CUANDO SE CLICKEA
+============================================ */
+function switchModalTab(event, tabId) {
+    if (event) event.currentTarget.classList.add('active');
+    switchModalTabAuto(tabId);
+}
+
+
+/* ============================================
+   CERRAR MODAL
+============================================ */
+function closeModal() {
+    document.getElementById("modalOverlay").style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
+
+/* LIGHTBOX */
+function openLightbox(src) {
+    document.getElementById("lightboxImg").src = src;
+    document.getElementById("lightboxOverlay").style.display = "flex";
+}
+
+function closeLightbox() {
+    document.getElementById("lightboxOverlay").style.display = "none";
+}
+
+/* Cerrar con ESC */
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeLightbox();
+        closeModal();
+    }
+});
+
+/* FILTROS */
+let filtros = {
+    tiempo: "all",
+    gravedad: "all-severity",
+    sector: "all"
+};
+
+document.querySelectorAll(".filter-chip").forEach(c => {
+    c.addEventListener("click", function() {
+        const grupo = this.closest(".filter-section");
+        grupo.querySelectorAll(".filter-chip").forEach(x => x.classList.remove("active"));
+        this.classList.add("active");
+
+        const f = this.dataset.filter;
+        if (['all','7d','30d','3m','6m','year'].includes(f)) filtros.tiempo = f;
+        if (['leve','moderado','grave','all-severity'].includes(f)) filtros.gravedad = f;
+
+        aplicarFiltros();
+    });
+});
+
+document.getElementById("sectorSelect").addEventListener("change", function() {
+    filtros.sector = this.value;
+    aplicarFiltros();
+});
+
+function aplicarFiltros() {
+    let lista = [...reportesData];
+
+    if (filtros.gravedad !== 'all-severity')
+        lista = lista.filter(r => r.gravedad === filtros.gravedad);
+
+    if (filtros.sector !== 'all')
+        lista = lista.filter(r => r.sector === filtros.sector);
+
+    renderMarkers(lista);
+}
+
+/* SIDEBAR */
+let sidebarVisible = true;
+
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const btn = document.getElementById("toggleBtn");
+    const icon = document.getElementById("toggleIcon");
+
+    if (sidebarVisible) {
+        sidebar.style.transform = "translateX(-380px)";
+        btn.style.left = "20px";
+        icon.className = "fas fa-chevron-right";
+    } else {
+        sidebar.style.transform = "translateX(0)";
+        btn.style.left = "380px";
+        icon.className = "fas fa-chevron-left";
+    }
+
+    sidebarVisible = !sidebarVisible;
+    setTimeout(() => map.invalidateSize(), 300);
+}
+</script>
+{% endblock %}

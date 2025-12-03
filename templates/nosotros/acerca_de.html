@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ℹ️ Acerca de | Huella Urbana{% endblock %}
+
+{% block extra_head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/acerca_de.css' %}">
+
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<div class="hero-section">
+    <h1>🐾 Recolector de Ataques KELS</h1>
+    <p>Plataforma de Monitoreo y Concientización Ciudadana</p>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+    
+    <!-- MISIÓN -->
+    <div class="content-section">
+        <h2 class="section-title"><i class="fas fa-bullseye"></i> Nuestra Misión</h2>
+        <div class="mission-card">
+            <p>
+                El <strong>Recolector de Ataques de Perros Callejeros</strong> es una plataforma web interactiva diseñada para registrar, visualizar y analizar ataques de perros callejeros hacia otros animales domésticos en la comuna de Valdivia y sus alrededores.
+            </p>
+            <p>
+                Nuestro objetivo es recolectar información real y verificable a partir de reportes ciudadanos, que incluyen fotografías, ubicación geográfica y descripción detallada de cada incidente, generando así estadísticas y evidencia visual que sirvan de apoyo a las autoridades municipales, organizaciones animalistas y comunidad en general.
+            </p>
+        </div>
+    </div>
+
+    <!-- VALORES -->
+    <div class="content-section">
+        <h2 class="section-title"><i class="fas fa-heart"></i> Nuestros Valores</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="value-card">
+                    <div class="value-icon"><i class="fas fa-eye"></i></div>
+                    <h4>Transparencia</h4>
+                    <p>Todos los reportes son verificados por moderadores antes de publicarse</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="value-card">
+                    <div class="value-icon success"><i class="fas fa-shield-alt"></i></div>
+                    <h4>Confiabilidad</h4>
+                    <p>Evidencia fotográfica y geolocalizada en cada incidente</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="value-card">
+                    <div class="value-icon secondary"><i class="fas fa-users"></i></div>
+                    <h4>Colaborativo</h4>
+                    <p>La comunidad participa activamente en el reporte de incidentes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ESTADÍSTICAS -->
+    <div class="content-section">
+        <h2 class="section-title"><i class="fas fa-chart-line"></i> Nuestro Impacto</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">247</div>
+                <div class="stat-label">Reportes Documentados</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">15</div>
+                <div class="stat-label">Sectores Monitoreados</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">350+</div>
+                <div class="stat-label">Usuarios Activos</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Políticas Municipales Apoyadas</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EQUIPO -->
+    <div class="content-section">
+        <h2 class="section-title"><i class="fas fa-users"></i> Equipo KELS</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="team-member">
+                    <div class="team-avatar"><i class="fas fa-user-tie"></i></div>
+                    <div class="team-name">KELS Team</div>
+                    <div class="team-role">Desarrollo & Gestión</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="team-member">
+                    <div class="team-avatar success"><i class="fas fa-code"></i></div>
+                    <div class="team-name">Equipo Técnico</div>
+                    <div class="team-role">Desarrollo Web</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="team-member">
+                    <div class="team-avatar warning"><i class="fas fa-shield-alt"></i></div>
+                    <div class="team-name">Moderadores</div>
+                    <div class="team-role">Verificación de Reportes</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="team-member">
+                    <div class="team-avatar secondary"><i class="fas fa-hands-helping"></i></div>
+                    <div class="team-name">Voluntarios</div>
+                    <div class="team-role">Apoyo Comunitario</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+        <h2><i class="fas fa-rocket"></i> Únete a Nuestra Causa</h2>
+        <p class="cta-text">Ayúdanos a construir una comunidad más segura para nuestras mascotas</p>
+        <button class="btn-cta" onclick="window.location.href='{% url 'nuevo_reporte' %}'">
+            <i class="fas fa-plus-circle"></i> Crear Mi Primer Reporte
+        </button>
+    </div>
+
+</div>
+
+
+{% endblock %}
