@@ -9,16 +9,17 @@ import os
 # BASE DIR
 # ----------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
+from django.core.management.utils import get_random_secret_key
 
 
 # ----------------------------
 # SECURITY
 # ----------------------------
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "local-secret-key-123")
+
 DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com"]
 # ----------------------------
 # AUTH REDIRECTS
 # ----------------------------
@@ -76,17 +77,17 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # ----------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-
-    # ⭐ Obligatorio para django-allauth
     'allauth.account.middleware.AccountMiddleware',
-
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ----------------------------
 # URLS / WSGI
