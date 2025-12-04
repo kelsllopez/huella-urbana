@@ -4,13 +4,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),    # 🟣 RESTAURADO: PANEL ADMIN
-    path('', include('server.urls')),   # Rutas de tu aplicación principal
+    path('admin/', admin.site.urls),
+    path('', include('server.urls')),
     path('accounts/', include('allauth.urls')),
-
 ]
 
-# Archivos multimedia
-if settings.DEBUG is False:
+# ✅ Solo servir archivos estáticos (CSS, JS) en desarrollo
+if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# ⚠️ NO incluir MEDIA_URL cuando usas Cloudinary

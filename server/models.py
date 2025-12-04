@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
-
+from cloudinary.models import CloudinaryField
 
 class PerfilUsuario(models.Model):
     ROLES = [
@@ -155,10 +155,8 @@ class Foto(models.Model):
         verbose_name='Reporte asociado'
     )
 
-    archivo = models.ImageField(
-        upload_to='reportes/%Y/%m/%d/',
-        verbose_name='Fotografía'
-    )
+    archivo = CloudinaryField('imagen')
+
 
     subida_en = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de subida')
     orden = models.IntegerField(default=0, verbose_name='Orden de visualización')
@@ -181,9 +179,6 @@ class Foto(models.Model):
     def __str__(self):
         return f"Foto {self.id} - {self.reporte.titulo}"
 
-    def clean(self):
-        if self.reporte and self.reporte.fotos.count() >= 5:
-            raise ValidationError("Solo puedes subir un máximo de 5 imágenes por reporte.")
 
 
 class ModeracionLog(models.Model):
