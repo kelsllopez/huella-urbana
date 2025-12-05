@@ -14,10 +14,8 @@
 
 <div class="moderation-layout">
     
-    <!-- ===== SIDEBAR DE FILTROS ===== -->
     <aside class="filters-sidebar">
         <div class="sidebar-card">
-            <!-- Header -->
             <div class="sidebar-header">
                 <h2 class="sidebar-title">
                     <i class="fas fa-sliders-h"></i>
@@ -25,10 +23,8 @@
                 </h2>
             </div>
 
-            <!-- Body con filtros -->
             <div class="sidebar-body">
                 
-                <!-- Filtro Estado -->
                 <div class="filter-group">
                     <div class="filter-title">
                         <i class="fas fa-tasks"></i>
@@ -59,7 +55,6 @@
                     </div>
                 </div>
 
-                <!-- Filtro Gravedad -->
                 <div class="filter-group">
                     <div class="filter-title">
                         <i class="fas fa-exclamation-triangle"></i>
@@ -90,7 +85,6 @@
                     </div>
                 </div>
 
-                <!-- Filtro Tipo de Animal -->
                 <div class="filter-group">
                     <div class="filter-title">
                         <i class="fas fa-paw"></i>
@@ -121,7 +115,6 @@
                     </div>
                 </div>
 
-                <!-- Filtro Anónimo -->
                 <div class="filter-group">
                     <div class="filter-title">
                         <i class="fas fa-user-secret"></i>
@@ -149,7 +142,6 @@
                     </div>
                 </div>
 
-                <!-- Botón Exportar -->
                 <div class="export-section">
                     <a href="{% url 'exportar_csv' %}" class="export-btn">
                         <i class="fas fa-download"></i>
@@ -160,10 +152,8 @@
         </div>
     </aside>
 
-    <!-- ===== ÁREA DE CONTENIDO ===== -->
     <main class="content-area">
         
-        <!-- Stats Cards -->
         <div class="stats-container">
             <div class="stat-card pending">
                 <div class="stat-number" id="pendingCount">{{ pendientes }}</div>
@@ -183,7 +173,6 @@
             </div>
         </div>
 
-       <!-- Alert Contador - ACTUALIZADO -->
         {% if reportes %}
         <div class="alert-info" id="alertContador">
             <div class="alert-icon">
@@ -198,7 +187,6 @@
             </div>
         </div>
 
-        <!-- Lista de Reportes -->
         <div class="reports-list">
             {% for reporte in reportes %}
             <article class="report-card"
@@ -207,7 +195,6 @@
                 data-animal="{{ reporte.tipo_animal }}"
                 data-anonymous="{% if reporte.anonimo %}true{% else %}false{% endif %}">
 
-                <!-- Header del Reporte -->
                 <header class="report-top">
                     <div class="report-top-left">
                         <div class="report-id-badge">
@@ -229,16 +216,13 @@
                     </div>
                 </header>
 
-                <!-- Cuerpo del Reporte -->
                 <div class="report-content">
                     
-                    <!-- Título -->
                     <div class="report-title-section">
                         <h3 class="report-main-title">{{ reporte.titulo }}</h3>
                         <p class="report-subtitle">Reportado el {{ reporte.fecha|date:"d/m/Y" }} {% if reporte.hora %}a las {{ reporte.hora|time:"H:i" }} hrs{% endif %}</p>
                     </div>
 
-                    <!-- Grid de Información -->
                     <div class="info-grid">
                         <div class="info-box">
                             <div class="info-icon-box">
@@ -329,8 +313,6 @@
                     <p class="no-photos">No hay fotos disponibles</p>
                     {% endif %}
 
-
-                    <!-- Botones de Acción -->
                     <div class="report-actions">
                         {% if reporte.estado == 'pendiente' %}
                         <button class="action-btn btn-approve" onclick="aprobar({{ reporte.id }})">
@@ -351,17 +333,12 @@
             </article>
             {% endfor %}
         </div>
-        <!-- FIN de reports-list -->
 
-        <!-- ========================================
-             PAGINACIÓN - AGREGAR AQUÍ
-             ======================================== -->
         {% if reportes.has_other_pages %}
         <div class="pagination-container">
             <nav aria-label="Paginación de reportes">
                 <ul class="pagination-list">
                     
-                    <!-- Botón Primera Página -->
                     {% if reportes.has_previous %}
                     <li class="pagination-item">
                         <a href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
@@ -372,7 +349,6 @@
                     </li>
                     {% endif %}
                     
-                    <!-- Botón Anterior -->
                     {% if reportes.has_previous %}
                     <li class="pagination-item">
                         <a href="?page={{ reportes.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
@@ -389,7 +365,6 @@
                     </li>
                     {% endif %}
                     
-                    <!-- Números de Página -->
                     {% for num in reportes.paginator.page_range %}
                         {% if reportes.number == num %}
                         <li class="pagination-item active">
@@ -405,7 +380,6 @@
                         {% endif %}
                     {% endfor %}
                     
-                    <!-- Botón Siguiente -->
                     {% if reportes.has_next %}
                     <li class="pagination-item">
                         <a href="?page={{ reportes.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
@@ -422,7 +396,6 @@
                     </li>
                     {% endif %}
                     
-                    <!-- Botón Última Página -->
                     {% if reportes.has_next %}
                     <li class="pagination-item">
                         <a href="?page={{ reportes.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
@@ -436,16 +409,13 @@
                 </ul>
             </nav>
             
-            <!-- Info de paginación -->
             <div class="pagination-info">
                 Página {{ reportes.number }} de {{ reportes.paginator.num_pages }}
             </div>
         </div>
         {% endif %}
-        <!-- FIN PAGINACIÓN -->
 
         {% else %}
-        <!-- Estado Vacío -->
         <div class="empty-state">
             <div class="empty-icon">
                 <i class="fas fa-inbox"></i>
@@ -469,7 +439,6 @@
       </p>
     </div>
 
-    <!-- PESTAÑAS -->
     <div class="tabs-container">
       <button class="tab-button active" onclick="switchTab(event, 'tab-incidente')">
         <i class="fas fa-paw"></i><span>Información del Incidente</span>
@@ -485,7 +454,6 @@
       </button>
     </div>
 
-    <!-- TAB INCIDENCIA -->
     <div id="tab-incidente" class="tab-content active">
       <div class="detail-grid">
 
@@ -512,7 +480,6 @@
       </div>
     </div>
 
-    <!-- TAB REPORTANTE -->
     <div id="tab-reportante" class="tab-content">
       <div class="detail-grid">
 
@@ -544,7 +511,6 @@
       </div>
     </div>
 
-    <!-- TAB UBICACIÓN -->
     <div id="tab-ubicacion" class="tab-content">
       <div class="detail-grid">
 
@@ -571,7 +537,6 @@
       </a>
     </div>
 
-    <!-- TAB DESCRIPCIÓN -->
     <div id="tab-descripcion" class="tab-content">
       <div class="description-box">
         <p id="modal-descripcion"></p>
@@ -583,34 +548,26 @@
 
 </div>
 
-<!-- JAVASCRIPT -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-// ========================================
-// INICIALIZAR FILTROS DESDE LA URL
-// ========================================
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Leer parámetros de la URL
     const urlParams = new URLSearchParams(window.location.search);
     
-    // Restaurar estado de filtros
     currentFilters.status = urlParams.get('estado') || 'pendiente';
     currentFilters.severity = urlParams.get('gravedad') || 'all';
     currentFilters.animal = urlParams.get('animal') || 'all';
     currentFilters.anonymous = urlParams.get('anonimo') || 'all';
     
-    // Actualizar UI de los filtros
     updateFilterUI();
 });
 
-// Cerrar dropdowns al hacer clic fuera
 document.addEventListener('click', (e) => {
     if (!e.target.closest('.filter-dropdown')) {
         document.querySelectorAll('.filter-dropdown').forEach(d => d.classList.remove('open'));
     }
 });
 
-// Toggle dropdown
 function toggleFilter(id) {
     const dropdown = document.getElementById(id);
     const wasOpen = dropdown.classList.contains('open');
@@ -620,7 +577,6 @@ function toggleFilter(id) {
     if (!wasOpen) dropdown.classList.add('open');
 }
 
-// Filtros activos
 let currentFilters = {
     status: 'pendiente',
     severity: 'all',
@@ -628,7 +584,6 @@ let currentFilters = {
     anonymous: 'all'
 };
 
-// Mapeo de valores para los labels
 const filterLabels = {
     status: {
         'pendiente': { label: 'Pendientes', icon: 'fa-clock' },
@@ -655,16 +610,13 @@ const filterLabels = {
     }
 };
 
-// Actualizar la UI de los filtros según el estado actual
 function updateFilterUI() {
-    // Actualizar cada dropdown
     updateDropdownUI('statusFilter', 'status', currentFilters.status);
     updateDropdownUI('severityFilter', 'severity', currentFilters.severity);
     updateDropdownUI('animalFilter', 'animal', currentFilters.animal);
     updateDropdownUI('anonymousFilter', 'anonymous', currentFilters.anonymous);
 }
 
-// Actualizar un dropdown específico
 function updateDropdownUI(dropdownId, filterType, value) {
     const dropdown = document.getElementById(dropdownId);
     const button = dropdown.querySelector('.filter-btn');
@@ -676,7 +628,6 @@ function updateDropdownUI(dropdownId, filterType, value) {
             ${config.label}
         `;
         
-        // Marcar como activo si no es 'all'
         if (value !== 'all') {
             button.classList.add('active');
         } else {
@@ -684,7 +635,6 @@ function updateDropdownUI(dropdownId, filterType, value) {
         }
     }
     
-    // Actualizar opciones seleccionadas
     dropdown.querySelectorAll('.filter-option').forEach(opt => {
         opt.classList.remove('selected');
     });
@@ -696,7 +646,6 @@ function updateDropdownUI(dropdownId, filterType, value) {
     }
 }
 
-// Seleccionar filtro
 function selectFilter(type, value, label, icon) {
     currentFilters[type] = value;
     
@@ -708,7 +657,6 @@ function selectFilter(type, value, label, icon) {
         ${label}
     `;
     
-    // Agregar/quitar clase active
     if (value !== 'all') {
         button.classList.add('active');
     } else {
@@ -723,11 +671,9 @@ function selectFilter(type, value, label, icon) {
     applyFilters();
 }
 
-// Aplicar filtros (recarga la página con los parámetros correctos)
 function applyFilters() {
     const params = new URLSearchParams();
     
-    // Agregar filtros activos (solo los que no son 'all')
     if (currentFilters.status !== 'all') {
         params.set('estado', currentFilters.status);
     }
@@ -744,11 +690,9 @@ function applyFilters() {
         params.set('anonimo', currentFilters.anonymous);
     }
     
-    // Redirigir con los nuevos parámetros
     window.location.search = params.toString();
 }
 
-// Cookie CSRF
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== "") {
@@ -764,7 +708,6 @@ function getCookie(name) {
     return cookieValue;
 }
 
-// Aprobar
 function aprobar(id) {
     Swal.fire({
         title: "¿Aprobar este reporte?",
@@ -789,7 +732,6 @@ function aprobar(id) {
     });
 }
 
-// Rechazar
 function rechazar(id) {
     Swal.fire({
         title: "¿Rechazar este reporte?",
@@ -820,7 +762,6 @@ function rechazar(id) {
     });
 }
 
-// Función global para cambiar de pestaña
 function switchTab(event, tabId) {
     const buttons = document.querySelectorAll('.tab-button');
     buttons.forEach(btn => btn.classList.remove('active'));
@@ -831,7 +772,6 @@ function switchTab(event, tabId) {
     document.getElementById(tabId).classList.add('active');
 }
 
-// Ver detalles del reporte
 function verDetalles(id) {
     fetch(`/detalles/${id}/`)
         .then(res => res.json())
@@ -841,17 +781,14 @@ function verDetalles(id) {
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = modalHTML;
 
-            // TÍTULO Y FECHA
             tempDiv.querySelector('#modal-titulo').textContent = data.titulo || 'Sin título';
             tempDiv.querySelector('#modal-fecha').textContent = `${data.fecha} ${data.hora ? '- ' + data.hora : ''}`;
 
-            // INFORMACIÓN DEL INCIDENTE
             tempDiv.querySelector('#modal-tipo-animal').textContent = data.tipo_animal || "No especificado";
             tempDiv.querySelector('#modal-cantidad-perros').textContent = data.cantidad_perros || "Sin dato";
             tempDiv.querySelector('#modal-gravedad').textContent = data.gravedad || "Sin dato";
             tempDiv.querySelector('#modal-direccion').textContent = data.direccion || "No indicada";
 
-            // DATOS DEL REPORTANTE
             tempDiv.querySelector('#modal-nombre').textContent = 
                 data.nombre_reportante && data.nombre_reportante.trim() !== "" ? data.nombre_reportante : "Anónimo";
             tempDiv.querySelector('#modal-email').textContent = 
@@ -861,7 +798,6 @@ function verDetalles(id) {
             tempDiv.querySelector('#modal-anonimo').textContent = data.anonimo ? "Sí" : "No";
             tempDiv.querySelector('#modal-usuario').textContent = data.usuario ? data.usuario : "No asociado";
 
-            // UBICACIÓN
             tempDiv.querySelector('#modal-sector').textContent = data.sector || "No especificado";
             tempDiv.querySelector('#modal-direccion-ubicacion').textContent = data.direccion || "No indicada";
             tempDiv.querySelector('#modal-coordenadas').textContent = 
@@ -869,11 +805,9 @@ function verDetalles(id) {
             tempDiv.querySelector('#modal-map-link').href = 
                 data.latitud && data.longitud ? `https://www.google.com/maps?q=${data.latitud},${data.longitud}` : "#";
 
-            // DESCRIPCIÓN
             tempDiv.querySelector('#modal-descripcion').textContent = 
                 data.descripcion && data.descripcion.trim() !== "" ? data.descripcion : "Sin descripción proporcionada";
 
-            // MOSTRAR MODAL
             Swal.fire({
                 html: tempDiv.innerHTML,
                 showConfirmButton: true,
@@ -889,7 +823,6 @@ function verDetalles(id) {
         });
 }
 
-// Ver foto ampliada
 function showImageModal(src) {
     Swal.fire({
         imageUrl: src,

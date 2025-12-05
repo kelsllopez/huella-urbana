@@ -4,9 +4,6 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
 
-    # ============================
-    # Público / Principal
-    # ============================
     path('', views.index, name='index'),
     path('estadisticas/', views.estadisticas, name='estadisticas'),
     path('detalle_reporte_mapa/<int:id>/', views.detalle, name='detalle_reporte_mapa'),
@@ -17,21 +14,15 @@ urlpatterns = [
     path('ayuda/', views.ayuda, name='ayuda'),
     path('acerca/', views.acerca, name='acerca'),
 
-    # ============================
-    # Autenticación
-    # ============================
+
     path('registro/', views.registro, name='registro'),
     path('logout/', views.cerrar_sesion, name='logout'),
-
     path("login/", views.login_view, name="login"),
 
-    # ============================
-    # Reset Password (flujo completo)
-    # ============================
     path("reset/", auth_views.PasswordResetView.as_view(
             template_name="auth/password_reset_form.html",
-            email_template_name="registration/password_reset_email.txt",  # texto
-            html_email_template_name="registration/password_reset_email.html",  # HTML bonito
+            email_template_name="registration/password_reset_email.txt", 
+            html_email_template_name="registration/password_reset_email.html",
             subject_template_name="registration/password_reset_subject.txt",
         ),
         name="password_reset"
@@ -41,18 +32,14 @@ urlpatterns = [
     path('reset/completo/',auth_views.PasswordResetCompleteView.as_view(template_name='auth/password_reset_complete.html'),name='password_reset_complete'),
     path("api/check-email/", views.check_email, name="check_email"),
 
-    # ============================
-    # Moderador
-    # ============================
+
     path('moderador/', views.panel_moderador, name='panel_moderador'),
     path('detalles/<int:id>/', views.detalles_reporte, name='detalles_reporte'),
     path('aprobar/<int:id>/', views.aprobar_reporte, name='aprobar_reporte'),
     path('rechazar/<int:id>/', views.rechazar_reporte, name='rechazar_reporte'),
     path('exportar_csv/', views.exportar_csv, name='exportar_csv'),
 
-    # ============================
-    # Administrador de Usuarios (CRUD)
-    # ============================
+
     path('usuarios/', views.usuarios_list, name='usuarios_list'),
     path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
     path('usuarios/<int:user_id>/data/', views.usuario_data, name='usuario_data'),

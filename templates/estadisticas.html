@@ -280,7 +280,6 @@
 {% block extra_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-// Función para cambiar tabs
 function showTab(tabName) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -293,9 +292,7 @@ function showTab(tabName) {
     if (clickedBtn) clickedBtn.classList.add('active');
 }
 
-// Inicializar gráficos cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    // Gráfico de Barras - Reportes por Mes
     const ctxBarras = document.getElementById('chartBarras').getContext('2d');
     new Chart(ctxBarras, {
         type: 'bar',
@@ -322,7 +319,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Gráfico de Dona - Distribución por Gravedad
     const ctxDona = document.getElementById('chartDona').getContext('2d');
     new Chart(ctxDona, {
         type: 'doughnut',
@@ -348,7 +344,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Gráfico de Línea - Tendencia Temporal
     const ctxLinea = document.getElementById('chartLinea').getContext('2d');
     new Chart(ctxLinea, {
         type: 'line',
@@ -376,7 +371,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Gráfico de Barras - Incidentes por Hora
     const ctxHoras = document.getElementById('chartHoras').getContext('2d');
     new Chart(ctxHoras, {
         type: 'bar',
@@ -403,7 +397,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Gráfico de Barras - Incidentes por Día
     const ctxDias = document.getElementById('chartDias').getContext('2d');
     new Chart(ctxDias, {
         type: 'bar',

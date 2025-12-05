@@ -11,8 +11,6 @@
 
 {% block content %}
 
-
-    <!-- DJANGO MESSAGES -->
     {% if messages %}
     <div class="django-messages">
         {% for message in messages %}
@@ -36,15 +34,12 @@
     {% endif %}
 <div class="registro-wrapper">
 
-    <!-- CONTENEDOR -->
     <div class="register-container">
         
-        <!-- BOTÓN VOLVER -->
         <button class="back-btn" onclick="window.location.href='{% url 'login' %}'" title="Volver al login">
             <i class="fas fa-arrow-left"></i>
         </button>
 
-        <!-- LOGO -->
         <div class="logo-container">
             <div class="logo-icon">
                 <i class="fas fa-user-plus"></i>
@@ -53,7 +48,6 @@
             <p class="logo-subtitle">Únete a la comunidad Huella Urbana</p>
         </div>
 
-        <!-- FORMULARIO -->
         <form id="registerForm" method="POST" action="{% url 'registro' %}">
             {% csrf_token %}
             
@@ -120,7 +114,6 @@
             <span>O regístrate con</span>
         </div>
 
-        <!-- SOCIAL LOGIN -->
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
             <button style="padding: 0.8rem; border-radius: 12px; border: 3px solid #E5E7EB; background: white; cursor: pointer; transition: all 0.3s ease; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem;" onclick="registerWithGoogle()">
                 <i class="fab fa-google" style="color: #EA4335; font-size: 1.3rem;"></i>
@@ -132,7 +125,6 @@
             </button>
         </div>
 
-        <!-- LOGIN LINK -->
         <div class="login-link">
             <p>¿Ya tienes una cuenta? 
                 <a href="{% url 'login' %}">Inicia sesión aquí</a>
@@ -143,10 +135,8 @@
 </div>
 {% endblock %}
 {% block extra_scripts %}
-   <!-- Leaflet + SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- TU JS STATIC -->
     <script src="{% static 'js/registro.js' %}"></script>
 {% endblock %}

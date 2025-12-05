@@ -12,13 +12,11 @@
 {% block content %}
 <br>
 <div class="form-container">
-  <!-- HEADER -->
   <div class="form-header">
     <h1><i class="fas fa-paw"></i> Nuevo Reporte</h1>
     <p>Ayúdanos a documentar incidentes de perros callejeros en Valdivia</p>
   </div>
 
-  <!-- STEPS -->
   <div class="steps-indicator">
     <div class="step active" data-step="1">
       <div class="step-circle">1</div>
@@ -34,11 +32,9 @@
     </div>
   </div>
 
-  <!-- FORM -->
   <form method="POST" enctype="multipart/form-data" id="reportForm">
     {% csrf_token %}
 
-    <!-- PASO 1: INFORMACIÓN -->
     <div class="step-content active" data-step="1">
       <div class="info-box">
         <h5><i class="fas fa-info-circle"></i> Paso 1: Información Básica</h5>
@@ -80,7 +76,6 @@
         </div>
       </div>
 
-      <!-- GRAVEDAD -->
       <div class="form-group">
         <label class="form-label"><i class="fas fa-exclamation-triangle"></i> Gravedad del Ataque <span class="required">*</span></label>
         
@@ -128,7 +123,6 @@
       </div>
     </div>
 
-    <!-- PASO 2: UBICACIÓN -->
     <div class="step-content" data-step="2">
       <div class="info-box">
         <h5><i class="fas fa-map-marker-alt"></i> Paso 2: Ubicación del Incidente</h5>
@@ -162,7 +156,7 @@
       </div>
     </div>
 
-    <!-- PASO 3: EVIDENCIA -->
+
     <div class="step-content" data-step="3">
       <div class="info-box">
         <h5><i class="fas fa-camera"></i> Paso 3: Evidencia Fotográfica</h5>
@@ -183,7 +177,6 @@
         </div>
       </div>
 
-      <!-- ANÓNIMO -->
       <div class="info-box" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white; border:none;">
         <h5 style="color:white;"><i class="fas fa-user-secret"></i> Privacidad del Reporte</h5>
         <div class="form-check" style="margin:15px 0;">
@@ -197,7 +190,6 @@
         </p>
       </div>
 
-      <!-- CONTACTO -->
       <div id="contactFields">
         <div class="form-grid">
           <div class="form-group">
@@ -219,7 +211,6 @@
       </div>
     </div>
 
-    <!-- ACCIONES -->
     <div class="form-actions">
       <a href="{% url 'index' %}" class="btn btn-cancel">
         <i class="fas fa-times"></i> Cancelar
@@ -240,14 +231,11 @@
 {% endblock %}
 
 {% block extra_scripts %}
-    <!-- Leaflet + SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- TU JS STATIC -->
     <script src="{% static 'js/nuevo_reporte.js' %}"></script>
 <script>
-/* ========================= MENSAJES DJANGO ========================= */
 {% if messages %}
     {% for message in messages %}
     Swal.fire({

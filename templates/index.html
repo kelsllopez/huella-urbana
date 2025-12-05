@@ -7,7 +7,6 @@
 
 {% block content %}
 
-<!-- HERO SECTION -->
 <section class="hero-section fade-in" style="margin-top: 0;">
   <div class="container text-center">
     <h1 class="hero-title">🐾 Recolector de Ataques de Perros Callejeros</h1>
@@ -36,10 +35,8 @@
   </div>
 </section>
 
-<!-- MAIN CONTENT -->
 <main class="container">
 
-  <!-- FEATURES -->
   <div class="row g-4 mb-5 fade-in">
     <div class="col-md-4">
       <div class="feature-card">
@@ -87,7 +84,6 @@
     </div>
   </div>
 
-  <!-- MAPA -->
   <div class="map-container fade-in" id="mapa">
     <h2 class="text-center mb-4" style="color: var(--color-primary); font-weight: 700;">
       <i class="fas fa-map-marked-alt"></i> Mapa de Incidentes Confirmados
@@ -101,7 +97,6 @@
     </div>
   </div>
 
-  <!-- INFORMACIÓN DEL PROYECTO -->
   <section class="row mt-5 fade-in">
     <div class="col-lg-6 mb-4">
       <div class="feature-card">
@@ -157,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let tieneMarcadores = false;
   const bounds = [];
 
-  // ==== Marcadores desde Django (aprobados) ====
   {% for r in reportes %}
     {% if r.estado == 'aprobado' and r.latitud and r.longitud %}
       (function() {
@@ -192,7 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
     {% endif %}
   {% endfor %}
 
-  // Si no hay marcadores válidos, muestra uno de prueba
   if (!tieneMarcadores) {
     const m = L.marker([-39.8142, -73.2459], { icon: dangerIcon })
       .addTo(map)
@@ -207,7 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
     bounds.push(m.getLatLng());
   }
 
-  // Ajusta zoom para cubrir todos los marcadores
   if (bounds.length > 0) {
     map.fitBounds(bounds, { padding: [40, 40] });
   }

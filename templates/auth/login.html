@@ -25,7 +25,6 @@
             <p class="logo-subtitle">Inicia sesión en tu cuenta</p>
         </div>
 
-        <!-- FORMULARIO DE LOGIN -->
         <form method="POST" id="loginForm">
             {% csrf_token %}
 
@@ -98,7 +97,6 @@
 
     </div>
 </div>
-<!-- ERRORES DE DJANGO OCULTOS -->
 <div id="django-errors" style="display:none;">
     {% if form.errors %}
         {% for field, errors in form.errors.items %}
@@ -114,7 +112,6 @@
         {% endfor %}
     {% endif %}
     
-    <!-- 📌 ERRORES DEL CONTEXTO -->
     {% if username_error %}
         <p id="username-context-error">{{ username_error }}</p>
     {% endif %}
@@ -123,7 +120,6 @@
         <p id="password-context-error">{{ password_error }}</p>
     {% endif %}
 </div>
-<!-- MENSAJES DE DJANGO -->
 {% if messages %}
     <div id="django-messages" style="display:none;">
         {% for message in messages %}

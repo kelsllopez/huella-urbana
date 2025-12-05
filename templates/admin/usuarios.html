@@ -9,7 +9,6 @@
 
 {% block content %}
 
-<!-- HERO HEADER -->
 <div class="hero-header fade-in-up" style="animation-delay: 0s;">
     <h1>
         <i class="fas fa-users-cog"></i>
@@ -18,9 +17,7 @@
     <p class="hero-subtitle">Administra roles, permisos y actividad de tu comunidad con estilo</p>
 </div>
 
-<!-- SEARCH BAR + FILTROS EN LA MISMA LÍNEA -->
 <div class="search-filters-container fade-in-up" style="animation-delay: 0.1s;">
-    <!-- Buscador -->
     <div class="search-wrapper">
         <div class="search-box">
             <i class="fas fa-search"></i>
@@ -28,7 +25,6 @@
         </div>
     </div>
 
-    <!-- Filtros de Roles -->
     <div class="filters-grid">
         <div class="filter-card filter-btn active" data-filter="all">
             <div class="filter-info">
@@ -64,7 +60,6 @@
     </div>
 </div>
 
-<!-- GRID DE USUARIOS -->
 <div class="users-grid">
     {% for usuario in usuarios %}
     <div class="user-item fade-in-up"
@@ -74,10 +69,8 @@
          style="animation-delay: {{ forloop.counter0|floatformat:1|add:'0.3' }}s;">
         
         <div class="user-card-modern">
-            <!-- Banner superior con gradiente según rol -->
             <div class="card-banner {{ usuario.perfil.rol }}"></div>
             
-            <!-- Avatar flotante -->
             <div class="avatar-container">
                 <div class="avatar-circle {{ usuario.perfil.rol }}">
                     <i class="fas
@@ -88,7 +81,6 @@
                 </div>
             </div>
             
-            <!-- Contenido del card -->
             <div class="card-content">
                 <div class="user-name-modern">
                     {{ usuario.get_full_name|default:usuario.username }}
@@ -105,7 +97,6 @@
                     {% else %}Usuario{% endif %}
                 </div>
                 
-                <!-- Información del usuario -->
                 <div class="info-items">
                     <div class="info-item">
                         <i class="fas fa-envelope"></i>
@@ -129,7 +120,6 @@
                     </div>
                 </div>
                 
-                <!-- Botones de acción -->
                 <div class="action-buttons">
                     <button class="btn-modern btn-edit-modern" onclick="editUser({{ usuario.id }})">
                         <i class="fas fa-edit"></i>
@@ -154,7 +144,6 @@
     {% endfor %}
 </div>
 
-<!-- BOTÓN FLOTANTE PARA CREAR USUARIOS -->
 <button class="fab-button" onclick="addUser()" title="Crear Usuario">
     <i class="fas fa-plus"></i>
 </button>
@@ -163,9 +152,7 @@
 
 {% block extra_scripts %}
 <script>
-/* ===========================
-   BUSCADOR
-=========================== */
+
 document.getElementById('searchInput').addEventListener('input', function(e) {
     const search = e.target.value.toLowerCase();
     document.querySelectorAll('.user-item').forEach(item => {

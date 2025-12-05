@@ -6,10 +6,6 @@ from django.db.models import Count
 from .models import PerfilUsuario, NuevoReporte, Foto, ModeracionLog
 
 
-# ========================================
-# INLINES
-# ========================================
-
 class FotoInline(admin.TabularInline):
     model = Foto
     extra = 1
@@ -37,10 +33,6 @@ class ModeracionLogInline(admin.TabularInline):
     def has_add_permission(self, request, obj=None):
         return False
 
-
-# ========================================
-# ADMIN: PERFIL USUARIO
-# ========================================
 
 @admin.register(PerfilUsuario)
 class PerfilUsuarioAdmin(admin.ModelAdmin):
@@ -76,9 +68,6 @@ class PerfilUsuarioAdmin(admin.ModelAdmin):
     reportes_totales.short_description = "Reportes realizados"
 
 
-# ========================================
-# ADMIN: NUEVO REPORTE
-# ========================================
 
 @admin.register(NuevoReporte)
 class NuevoReporteAdmin(admin.ModelAdmin):
@@ -152,7 +141,6 @@ class NuevoReporteAdmin(admin.ModelAdmin):
     
     actions = ['aprobar_reportes', 'rechazar_reportes', 'marcar_pendientes']
     
-    # Custom display methods
     def titulo_corto(self, obj):
         return obj.titulo[:50] + '...' if len(obj.titulo) > 50 else obj.titulo
     titulo_corto.short_description = "Título"
@@ -247,7 +235,6 @@ class NuevoReporteAdmin(admin.ModelAdmin):
         return mark_safe(html)
     info_reportante_completa.short_description = "Datos del reportante"
     
-    # Actions
     def aprobar_reportes(self, request, queryset):
         from django.utils import timezone
         updated = queryset.update(
@@ -273,10 +260,6 @@ class NuevoReporteAdmin(admin.ModelAdmin):
         self.message_user(request, f'{updated} reporte(s) marcado(s) como pendiente(s).')
     marcar_pendientes.short_description = "⏳ Marcar como pendientes"
 
-
-# ========================================
-# ADMIN: FOTO
-# ========================================
 
 @admin.register(Foto)
 class FotoAdmin(admin.ModelAdmin):
@@ -376,10 +359,6 @@ class FotoAdmin(admin.ModelAdmin):
     subida_en_corta.short_description = "Subida"
 
 
-# ========================================
-# ADMIN: MODERACIÓN LOG
-# ========================================
-
 @admin.register(ModeracionLog)
 class ModeracionLogAdmin(admin.ModelAdmin):
     list_display = (
@@ -443,9 +422,6 @@ class ModeracionLogAdmin(admin.ModelAdmin):
     motivo_corto.short_description = "Motivo"
 
 
-# ========================================
-# CONFIGURACIÓN DEL ADMIN SITE
-# ========================================
 
 admin.site.site_header = "🐕 Sistema de Reportes de Ataques"
 admin.site.site_title = "Admin - Reportes"

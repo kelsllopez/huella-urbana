@@ -87,11 +87,8 @@
         <i class="fas fa-plus"></i>
     </div>
 
-    <!-- MODAL -->
-<!-- MODAL CON TABS -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
     <div class="modal-container-tabs" onclick="event.stopPropagation()">
-        <!-- Header del Modal -->
         <div class="modal-header-tabs">
             <div class="modal-title-section">
                 <h4><i class="fas fa-file-alt"></i> <span id="modal-titulo-header">Detalles del Reporte</span></h4>
@@ -100,7 +97,6 @@
             <button class="modal-close-tabs" onclick="closeModal()">&times;</button>
         </div>
 
-        <!-- Tabs Navigation -->
         <div class="tabs-navigation">
             <button class="tab-btn active" onclick="switchModalTab(event, 'tab-incidente')">
                 <i class="fas fa-paw"></i>
@@ -117,10 +113,8 @@
             </button>
         </div>
 
-        <!-- Modal Body con contenido de tabs -->
         <div class="modal-body-tabs">
             
-            <!-- TAB 1: Información del Incidente -->
             <div id="tab-incidente" class="tab-content-modal active">
                 
                 <div class="detail-grid-modal">
@@ -150,7 +144,6 @@
             </div>
 
 
-            <!-- TAB 3: Ubicación -->
             <div id="tab-ubicacion" class="tab-content-modal">
                 <div class="detail-grid-modal">
                     <div class="detail-item-modal full-width">
@@ -181,7 +174,6 @@
                 </a>
             </div>
 
-            <!-- TAB 4: Descripción -->
             <div id="tab-descripcion" class="tab-content-modal">
                 <div class="description-box-modal">
                     <p id="modal-descripcion"></p>
@@ -190,7 +182,6 @@
 
         </div>
 
-        <!-- Footer -->
         <div class="modal-footer-tabs">
             <button class="btn-close-modal" onclick="closeModal()">
                 <i class="fas fa-times"></i> Cerrar
@@ -199,9 +190,6 @@
     </div>
 </div>
 
-
-
-    <!-- LIGHTBOX -->
     <div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
         <div class="lightbox-content" onclick="event.stopPropagation()">
             <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
@@ -283,18 +271,13 @@ function addMarker(rep) {
 
     markers.push(marker);
 }
-/* ==============================
-   MODAL CON TABS - FINAL
-============================== */
 
 function openModal(id) {
 
     const rep = reportesData.find(r => r.id === id);
     if (!rep) return;
 
-    /* ============================
-       HEADER
-    ============================ */
+
     document.getElementById("modal-titulo-header").textContent =
         rep.titulo || "Detalles del Reporte";
 
@@ -302,16 +285,12 @@ function openModal(id) {
         rep.fecha || "Fecha del incidente no disponible";
 
 
-    /* ============================
-       TAB 1 - Información del incidente
-    ============================ */
     document.getElementById("modal-tipo-animal").textContent =
         rep.tipo_animal || "Tipo de animal víctima no especificado";
 
     document.getElementById("modal-cantidad-perros").textContent =
         rep.cantidad_perros || "No especificado";
 
-    // Badge gravedad
     const gravedadTexto = {
         'leve': 'Leve',
         'moderado': 'Moderado',
@@ -323,16 +302,12 @@ function openModal(id) {
     document.getElementById("modal-gravedad").innerHTML =
         `<span class="severity-badge ${gravedadClase}">${gravedadTexto}</span>`;
 
-    /* ============================
-       TAB 3 - Ubicación
-    ============================ */
     document.getElementById("modal-sector").textContent =
         rep.sector || "Sector no especificado";
 
     document.getElementById("modal-direccion").textContent =
         rep.direccion || "Dirección no especificada";
 
-    // Latitud y Longitud CORREGIDAS
     if (rep.latitud && rep.longitud) {
         document.getElementById("modal-coordenadas").textContent =
             `Latitud: ${parseFloat(rep.latitud).toFixed(6)}, Longitud: ${parseFloat(rep.longitud).toFixed(6)}`;
@@ -341,57 +316,37 @@ function openModal(id) {
             "Coordenadas no disponibles";
     }
 
-    // Enlace Google Maps
     const mapLink = document.getElementById("modal-map-link");
     mapLink.href = `https://www.google.com/maps?q=${rep.latitud},${rep.longitud}`;
 
-
-    /* ============================
-       TAB 4 - Descripción
-    ============================ */
     document.getElementById("modal-descripcion").textContent =
         rep.descripcion || "Descripción detallada no disponible";
 
 
-    /* ============================
-       MOSTRAR MODAL
-    ============================ */
     document.getElementById("modalOverlay").style.display = "block";
     document.body.style.overflow = "hidden";
 
-    // Activar primer tab SIEMPRE
     switchModalTabAuto('tab-incidente');
 }
 
 
-/* ============================================
-   FUNCIÓN PARA CAMBIAR TABS SIN event
-============================================ */
 function switchModalTabAuto(tabId) {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
     document.querySelectorAll(".tab-content-modal").forEach(c => c.classList.remove("active"));
     document.getElementById(tabId).classList.add("active");
 }
 
-/* ============================================
-   FUNCIÓN PARA CAMBIAR TABS CUANDO SE CLICKEA
-============================================ */
 function switchModalTab(event, tabId) {
     if (event) event.currentTarget.classList.add('active');
     switchModalTabAuto(tabId);
 }
 
-
-/* ============================================
-   CERRAR MODAL
-============================================ */
 function closeModal() {
     document.getElementById("modalOverlay").style.display = "none";
     document.body.style.overflow = "auto";
 }
 
 
-/* LIGHTBOX */
 function openLightbox(src) {
     document.getElementById("lightboxImg").src = src;
     document.getElementById("lightboxOverlay").style.display = "flex";
@@ -401,7 +356,6 @@ function closeLightbox() {
     document.getElementById("lightboxOverlay").style.display = "none";
 }
 
-/* Cerrar con ESC */
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeLightbox();
@@ -409,7 +363,6 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-/* FILTROS */
 let filtros = {
     tiempo: "all",
     gravedad: "all-severity",
@@ -447,7 +400,6 @@ function aplicarFiltros() {
     renderMarkers(lista);
 }
 
-/* SIDEBAR */
 let sidebarVisible = true;
 
 function toggleSidebar() {

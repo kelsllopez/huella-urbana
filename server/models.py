@@ -49,7 +49,6 @@ class NuevoReporte(models.Model):
         ('rechazado', 'Rechazado'),
     ]
 
-    # Datos del reporte
     titulo = models.CharField(max_length=200, verbose_name='Título')
     fecha = models.DateField(verbose_name='Fecha del incidente')
     hora = models.TimeField(null=True, blank=True, verbose_name='Hora aproximada')
@@ -74,7 +73,6 @@ class NuevoReporte(models.Model):
 
     descripcion = models.TextField(verbose_name='Descripción detallada')
 
-    # Ubicación
     direccion = models.CharField(max_length=300, verbose_name='Dirección')
     sector = models.CharField(max_length=50, choices=SECTOR_CHOICES, null=True, blank=True, verbose_name='Sector')
 
@@ -91,7 +89,6 @@ class NuevoReporte(models.Model):
         verbose_name='Longitud'
     )
 
-    # Reportante
     nombre_reportante = models.CharField(max_length=200, null=True, blank=True, verbose_name='Nombre del reportante')
     email_reportante = models.EmailField(null=True, blank=True, verbose_name='Email del reportante')
     telefono_reportante = models.CharField(max_length=20, null=True, blank=True, verbose_name='Teléfono')
@@ -105,7 +102,6 @@ class NuevoReporte(models.Model):
         related_name='reportes'
     )
 
-    # Moderación
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
     moderador = models.ForeignKey(
         User,
